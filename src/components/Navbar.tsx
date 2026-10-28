@@ -53,7 +53,7 @@ export const Navbar: React.FC = () => {
         </Link>
 
         {/* Desktop Nav Links */}
-        <div className="nav-links" style={{ display: 'flex' }}>
+        <div className="nav-links">
           <button 
             onClick={() => scrollToSection('lineup')} 
             className="nav-link"
@@ -116,7 +116,7 @@ export const Navbar: React.FC = () => {
         <button
           className="mobile-menu-toggle"
           onClick={() => setMenuOpen(!menuOpen)}
-          style={{ display: 'none', color: '#fff', padding: '8px' }}
+          style={{ color: '#fff', padding: '8px' }}
           aria-label="Toggle navigation menu"
         >
           {menuOpen ? <X size={24} /> : <Menu size={24} />}

@@ -42,7 +42,6 @@ html {
   background-color: var(--bg-primary);
   color: var(--text-primary);
   font-family: var(--font-body);
-  scroll-behavior: smooth;
   overflow-x: hidden;
 }
 
@@ -93,6 +92,94 @@ img {
   background: linear-gradient(90deg, #0066b1 0%, #002b49 50%, #e2001a 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Masked text reveal wrapper: clips the inner word/line as it slides in */
+.mask-reveal-wrap {
+  display: inline-block;
+  overflow: hidden;
+}
+
+/* Long single words ("UNFORGIVING.", "SPECIFICATIONS") must wrap instead of
+   silently overflowing narrow viewports (html/body clip overflow-x, so an
+   unwrapped word just gets cut off rather than causing a scrollbar) */
+.font-display,
+.font-tech {
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
+
+/* Hero headline: at ~768px (iPad portrait) the fluid clamp() sizing leaves
+   "UNFORGIVING." a few pixels wider than its container, forcing an ugly
+   mid-word break. Trim it slightly only in this narrow tablet band — mobile
+   and desktop/laptop sizes outside this range are untouched. */
+@media (min-width: 640px) and (max-width: 880px) {
+  .hero-headline {
+    font-size: clamp(2.6rem, 6.9vw, 6.8rem) !important;
+  }
+}
+
+/* Hero's background car image: at its desktop footprint (72% wide, 75% tall)
+   it collides with the paragraph text once the headline wraps to more lines
+   on mobile. Shrink it into a smaller, fainter corner accent instead so the
+   text underneath it stays fully legible. */
+@media (max-width: 640px) {
+  .hero-car-wrap {
+    width: 92% !important;
+    height: 34% !important;
+    top: 0 !important;
+    right: -6% !important;
+    opacity: 0.4;
+  }
+}
+
+/* Hero's floating specs strip: on mobile there isn't enough vertical room to
+   reserve space for an absolutely-positioned bottom strip once the headline
+   and paragraph wrap to more lines, so it ends up overlapping the content
+   above it. Below 768px it flows normally instead. */
+@media (max-width: 768px) {
+  .hero-stats-strip {
+    position: static !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    margin-top: 2.5rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding-top: 1.5rem;
+    row-gap: 1.25rem;
+  }
+}
+
+/* Design detail sections (ModelPage): stack image above text instead of a
+   cramped 2-column grid that has no room to breathe on narrow viewports */
+@media (max-width: 768px) {
+  .design-detail-item {
+    grid-template-columns: 1fr !important;
+    gap: 2rem !important;
+  }
+  .design-detail-item .detail-img {
+    order: 1 !important;
+    height: 320px !important;
+  }
+  .design-detail-item .detail-text {
+    order: 2 !important;
+    padding: 0 !important;
+  }
+}
+
+/* GPU-acceleration hint for elements driven by GSAP transform/opacity tweens */
+.will-animate {
+  will-change: transform, opacity;
+}
+
+/* Scroll-prompt bounce (chevron) */
+@keyframes m-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+
+.animate-bounce {
+  animation: m-bounce 1.6s ease-in-out infinite;
 }
 
 /* Scrollbar */
@@ -196,6 +283,22 @@ img {
   gap: 2.5rem;
 }
 
+.mobile-menu-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
 .nav-link {
   font-size: 0.82rem;
   font-weight: 600;
@@ -290,6 +393,29 @@ img {
   .model-card-container {
     width: 320px;
     height: 500px;
+  }
+}
+
+/* Horizontal Model Gallery */
+.model-gallery-section {
+  overflow: hidden;
+}
+
+@media (max-width: 768px) {
+  .model-gallery-section {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.gallery-header {
+  padding: 0 3.5rem;
+}
+
+@media (max-width: 768px) {
+  .gallery-header {
+    padding: 0 1.5rem;
   }
 }
 

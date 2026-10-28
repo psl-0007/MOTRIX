@@ -1,11 +1,12 @@
 import React, { useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
 import { useNavigate } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { BMW_MODELS, BMWModel } from '../data/models';
 import { ModelCard } from './ModelCard';
-import { ArrowLeft, ArrowRight, Gauge } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
 
@@ -19,6 +20,8 @@ export const HorizontalModelGallery: React.FC = () => {
   const [activeModelId, setActiveModelId] = useState<string | null>(null);
   const [isExpanding, setIsExpanding] = useState(false);
   const [expandingModel, setExpandingModel] = useState<BMWModel | null>(null);
+
+  const horizontalScrollTriggerRef = useRef<ScrollTrigger | null>(null);
 
   const navigate = useNavigate();
 
@@ -59,13 +62,17 @@ export const HorizontalModelGallery: React.FC = () => {
           },
         });
 
+        horizontalScrollTriggerRef.current = horizontalTween.scrollTrigger ?? null;
+
         return () => {
+          horizontalScrollTriggerRef.current = null;
           horizontalTween.kill();
         };
       });
 
       mm.add('(max-width: 768px)', () => {
-        // Touch friendly horizontal layout on mobile without forced pin trapping
+        // Touch friendly horizontal layout on mobile: native swipe scroll, no pin
+        horizontalScrollTriggerRef.current = null;
         gsap.set(track, { x: 0 });
       });
     },
@@ -76,15 +83,18 @@ export const HorizontalModelGallery: React.FC = () => {
   const handleSelectModel = (model: BMWModel, cardEl: HTMLElement) => {
     if (isExpanding) return;
 
-    setActiveModelId(model.id);
-    setIsExpanding(true);
-    setExpandingModel(model);
+    // Capture the clicked card's exact position before any state-driven layout shift
+    const rect = cardEl.getBoundingClientRect();
+
+    // Flush synchronously so `.expanding-car-img` exists in the DOM before we query it below
+    flushSync(() => {
+      setActiveModelId(model.id);
+      setIsExpanding(true);
+      setExpandingModel(model);
+    });
 
     const overlay = expansionOverlayRef.current;
     if (!overlay) return;
-
-    // Get clicked card's exact position on screen
-    const rect = cardEl.getBoundingClientRect();
 
     // Create expansion animation:
     // 1. Overlay image starts at clicked card rect
@@ -144,16 +154,36 @@ export const HorizontalModelGallery: React.FC = () => {
       );
   };
 
+  // Prev/Next controls: drive the pinned horizontal scroll on desktop,
+  // or natively scroll the track on mobile where there is no pin/ScrollTrigger.
+  const stepGallery = (direction: 1 | -1) => {
+    const st = horizontalScrollTriggerRef.current;
+    const track = trackRef.current;
+
+    if (st) {
+      const totalCards = BMW_MODELS.length;
+      const currentIndex = Math.round(st.progress * (totalCards - 1));
+      const nextIndex = Math.min(totalCards - 1, Math.max(0, currentIndex + direction));
+      const targetProgress = nextIndex / (totalCards - 1);
+      const targetScroll = st.start + targetProgress * (st.end - st.start);
+      window.scrollTo({ top: targetScroll, behavior: 'smooth' });
+    } else if (track && containerRef.current) {
+      const cardWidth = track.scrollWidth / BMW_MODELS.length;
+      containerRef.current.scrollBy({ left: direction * cardWidth, behavior: 'smooth' });
+    }
+  };
+
   return (
     <section
       ref={containerRef}
       id="lineup"
+      className="model-gallery-section"
       style={{
         position: 'relative',
+        isolation: 'isolate',
         width: '100vw',
         minHeight: '100vh',
         backgroundColor: '#050505',
-        overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -163,12 +193,14 @@ export const HorizontalModelGallery: React.FC = () => {
     >
       {/* Header Bar */}
       <div
+        className="gallery-header"
         style={{
-          padding: '0 3.5rem',
           marginBottom: '2rem',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'flex-end',
+          flexWrap: 'wrap',
+          gap: '1.5rem',
           zIndex: 10,
         }}
       >
@@ -243,7 +275,10 @@ export const HorizontalModelGallery: React.FC = () => {
                 gap: '8px',
               }}
             >
-              <div
+              <button
+                type="button"
+                onClick={() => stepGallery(-1)}
+                aria-label="Previous model"
                 style={{
                   width: '36px',
                   height: '36px',
@@ -256,8 +291,11 @@ export const HorizontalModelGallery: React.FC = () => {
                 }}
               >
                 <ArrowLeft size={16} />
-              </div>
-              <div
+              </button>
+              <button
+                type="button"
+                onClick={() => stepGallery(1)}
+                aria-label="Next model"
                 style={{
                   width: '36px',
                   height: '36px',
@@ -270,7 +308,7 @@ export const HorizontalModelGallery: React.FC = () => {
                 }}
               >
                 <ArrowRight size={16} />
-              </div>
+              </button>
             </div>
           </div>
 
@@ -303,7 +341,7 @@ export const HorizontalModelGallery: React.FC = () => {
         style={{
           display: 'flex',
           gap: '2.5rem',
-          padding: '1.5rem 3.5rem',
+          padding: '1.5rem clamp(1.25rem, 6vw, 3.5rem)',
           width: 'max-content',
           willChange: 'transform',
         }}
@@ -377,8 +415,8 @@ export const HorizontalModelGallery: React.FC = () => {
               style={{
                 position: 'absolute',
                 bottom: '15%',
-                left: '3.5rem',
-                right: '3.5rem',
+                left: 'clamp(1.25rem, 6vw, 3.5rem)',
+                right: 'clamp(1.25rem, 6vw, 3.5rem)',
                 zIndex: 210,
               }}
             >

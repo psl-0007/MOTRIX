@@ -210,8 +210,8 @@ export const ModelPage: React.FC = () => {
       <div
         style={{
           position: 'fixed',
-          top: '80px',
-          left: '3.5rem',
+          top: 'clamp(68px, 10vw, 80px)',
+          left: 'clamp(1rem, 6vw, 3.5rem)',
           zIndex: 80,
         }}
       >
@@ -253,12 +253,13 @@ export const ModelPage: React.FC = () => {
         className="stage-hero"
         style={{
           position: 'relative',
+          isolation: 'isolate',
           width: '100vw',
           height: '100vh',
           display: 'flex',
           flexDirection: 'column',
           justifyContent: 'flex-end',
-          padding: '0 3.5rem 5rem',
+          padding: '0 clamp(1.25rem, 6vw, 3.5rem) clamp(3rem, 10vw, 5rem)',
           overflow: 'hidden',
         }}
       >
@@ -344,7 +345,7 @@ export const ModelPage: React.FC = () => {
           style={{
             position: 'absolute',
             bottom: '2rem',
-            right: '3.5rem',
+            right: 'clamp(1.25rem, 6vw, 3.5rem)',
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
@@ -366,7 +367,7 @@ export const ModelPage: React.FC = () => {
         className="stage-statement"
         style={{
           position: 'relative',
-          padding: '8rem 3.5rem',
+          padding: 'clamp(4rem, 10vw, 8rem) clamp(1.25rem, 6vw, 3.5rem)',
           maxWidth: '1200px',
           margin: '0 auto',
           zIndex: 10,
@@ -469,7 +470,7 @@ export const ModelPage: React.FC = () => {
         className="stage-specs"
         style={{
           position: 'relative',
-          padding: '6rem 3.5rem 8rem',
+          padding: 'clamp(3.5rem, 10vw, 6rem) clamp(1.25rem, 6vw, 3.5rem) clamp(4rem, 12vw, 8rem)',
           backgroundColor: '#0a0c10',
           borderTop: '1px solid rgba(255, 255, 255, 0.05)',
           borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
@@ -569,7 +570,7 @@ export const ModelPage: React.FC = () => {
         className="stage-details"
         style={{
           position: 'relative',
-          padding: '8rem 3.5rem',
+          padding: 'clamp(4rem, 10vw, 8rem) clamp(1.25rem, 6vw, 3.5rem)',
           maxWidth: '1400px',
           margin: '0 auto',
           zIndex: 10,
@@ -706,7 +707,7 @@ export const ModelPage: React.FC = () => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '6rem 3.5rem',
+          padding: 'clamp(3.5rem, 10vw, 6rem) clamp(1.25rem, 6vw, 3.5rem)',
           backgroundColor: '#050505',
           overflow: 'hidden',
           borderTop: '1px solid rgba(255, 255, 255, 0.08)',

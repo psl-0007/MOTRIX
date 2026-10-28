@@ -18,10 +18,116 @@ export const IntroSequence: React.FC = () => {
 
   useGSAP(
     () => {
+      if (!introContainerRef.current) return;
+
+      // Scroll-linked separation & car emergence timeline — created synchronously, right away,
+      // so its pin-spacer reserves ~1200px of layout space from the very first paint. Creating
+      // this lazily (e.g. only once the user starts scrolling) inserts that spacer into the
+      // document AFTER scrolling has already begun, which retroactively shifts every section
+      // below Intro and causes a visible jump/layout-thrash right as the user starts scrolling.
+      // Its tweens stay a no-op until scroll actually reaches the pin's "top top" start, so
+      // creating it up front doesn't fight the entrance timeline below.
+      gsap
+        .timeline({
+          scrollTrigger: {
+            trigger: introContainerRef.current,
+            start: 'top top',
+            end: '+=1200',
+            pin: true,
+            scrub: 1,
+            anticipatePin: 1,
+          },
+        })
+        // Hide subtitle and prompt quickly as scroll starts
+        .fromTo(
+          subtitleRef.current,
+          { opacity: 1, y: 0 },
+          {
+            opacity: 0,
+            y: -20,
+            duration: 0.2,
+            ease: 'power1.out',
+          },
+          0
+        )
+        .fromTo(
+          scrollPromptRef.current,
+          { opacity: 0.7, y: 0, xPercent: -50 },
+          {
+            opacity: 0,
+            y: -20,
+            xPercent: -50,
+            duration: 0.2,
+            ease: 'power1.out',
+          },
+          0
+        )
+        // Typography separates horizontally: B moves left, W moves right, M scales & fades
+        .fromTo(
+          letterBRef.current,
+          { xPercent: 0, opacity: 1, scale: 1, y: 0 },
+          {
+            xPercent: -130,
+            opacity: 0,
+            scale: 1.15,
+            duration: 0.8,
+            ease: 'power2.inOut',
+          },
+          0.1
+        )
+        .fromTo(
+          letterWRef.current,
+          { xPercent: 0, opacity: 1, scale: 1, y: 0 },
+          {
+            xPercent: 130,
+            opacity: 0,
+            scale: 1.15,
+            duration: 0.8,
+            ease: 'power2.inOut',
+          },
+          0.1
+        )
+        .fromTo(
+          letterMRef.current,
+          { scale: 1, opacity: 1, y: 0 },
+          {
+            scale: 1.4,
+            opacity: 0,
+            duration: 0.7,
+            ease: 'power2.inOut',
+          },
+          0.15
+        )
+        // Vehicle emerges from behind typography with clipping mask & scale
+        .fromTo(
+          carRevealRef.current,
+          {
+            clipPath: 'polygon(30% 25%, 70% 25%, 70% 75%, 30% 75%)',
+            scale: 0.75,
+            opacity: 0,
+            y: 60,
+          },
+          {
+            clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
+            scale: 1,
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power2.out',
+          },
+          0.2
+        );
+
+      // If user is already scrolled (e.g. browser restored scroll on refresh), skip entrance
+      if (typeof window !== 'undefined' && window.scrollY > 10) {
+        gsap.set([letterBRef.current, letterMRef.current, letterWRef.current], { opacity: 1, scale: 1, y: 0 });
+        gsap.set(subtitleRef.current, { opacity: 1, y: 0 });
+        gsap.set(scrollPromptRef.current, { opacity: 0.7, xPercent: -50, y: 0 });
+        return;
+      }
+
       // 1. Initial entrance timeline (on page load)
-      const entranceTl = gsap.timeline({
-        defaults: { ease: 'power3.out' },
-      });
+      const entranceTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       entranceTl
         .fromTo(
@@ -43,71 +149,23 @@ export const IntroSequence: React.FC = () => {
         )
         .fromTo(
           scrollPromptRef.current,
-          { opacity: 0 },
-          { opacity: 0.7, duration: 0.6 },
+          { opacity: 0, xPercent: -50, y: 0 },
+          { opacity: 0.7, xPercent: -50, y: 0, duration: 0.6 },
           '-=0.2'
         );
 
-      // 2. Scroll-linked separation & car emergence timeline
-      const scrollTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: introContainerRef.current,
-          start: 'top top',
-          end: '+=1200',
-          pin: true,
-          scrub: 1,
-          anticipatePin: 1,
-        },
-      });
+      // If user starts scrolling during entrance, snap it to completion immediately
+      // so the letters/subtitle don't look stuck mid-fade while the user is scrolling.
+      const onEarlyScroll = () => {
+        if (entranceTl.isActive()) {
+          entranceTl.progress(1);
+        }
+      };
 
-      scrollTl
-        // Hide subtitle and prompt quickly as scroll starts
-        .to([subtitleRef.current, scrollPromptRef.current], {
-          opacity: 0,
-          y: -20,
-          duration: 0.2,
-          ease: 'power1.out',
-        })
-        // Typography separates horizontally: B moves left, W moves right, M scales & fades
-        .to(letterBRef.current, {
-          xPercent: -130,
-          opacity: 0,
-          scale: 1.15,
-          duration: 0.8,
-          ease: 'power2.inOut',
-        }, 0.1)
-        .to(letterWRef.current, {
-          xPercent: 130,
-          opacity: 0,
-          scale: 1.15,
-          duration: 0.8,
-          ease: 'power2.inOut',
-        }, 0.1)
-        .to(letterMRef.current, {
-          scale: 1.4,
-          opacity: 0,
-          duration: 0.7,
-          ease: 'power2.inOut',
-        }, 0.15)
-        // Vehicle emerges from behind typography with clipping mask & scale
-        .fromTo(
-          carRevealRef.current,
-          {
-            clipPath: 'polygon(30% 25%, 70% 25%, 70% 75%, 30% 75%)',
-            scale: 0.75,
-            opacity: 0,
-            y: 60,
-          },
-          {
-            clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)',
-            scale: 1,
-            opacity: 1,
-            y: 0,
-            duration: 1,
-            ease: 'power2.out',
-          },
-          0.2
-        );
+      window.addEventListener('scroll', onEarlyScroll, { passive: true, once: true });
+      return () => {
+        window.removeEventListener('scroll', onEarlyScroll);
+      };
     },
     { scope: introContainerRef }
   );
@@ -222,14 +280,14 @@ export const IntroSequence: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            fontSize: 'clamp(7rem, 24vw, 22rem)',
+            fontSize: 'clamp(3.5rem, 24vw, 22rem)',
             fontWeight: 900,
             lineHeight: 0.85,
             fontFamily: 'var(--font-display)',
             letterSpacing: '-0.02em',
             color: '#f5f5f7',
             overflow: 'hidden',
-            padding: '1rem 3rem',
+            padding: 'clamp(0.5rem, 3vw, 1rem) clamp(0.5rem, 4vw, 3rem)',
           }}
         >
           {/* Light Sweep Reflection Line */}
@@ -282,8 +340,11 @@ export const IntroSequence: React.FC = () => {
           style={{
             display: 'flex',
             alignItems: 'center',
+            justifyContent: 'center',
+            flexWrap: 'wrap',
             gap: '16px',
             marginTop: '1.5rem',
+            padding: '0 1.5rem',
           }}
         >
           <div className="m-badge-stripes">
@@ -295,9 +356,11 @@ export const IntroSequence: React.FC = () => {
             className="font-tech"
             style={{
               fontSize: 'clamp(0.75rem, 1.5vw, 1rem)',
-              letterSpacing: '0.35em',
+              letterSpacing: 'clamp(1px, 0.5vw, 5.6px)',
               color: 'var(--text-secondary)',
               textTransform: 'uppercase',
+              textAlign: 'center',
+              maxWidth: '85vw',
             }}
           >
             M DIVISION • THE MOST POWERFUL LETTER IN THE WORLD

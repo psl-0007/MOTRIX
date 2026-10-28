@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -13,9 +13,25 @@ import { ModelPage } from './pages/ModelPage';
 gsap.registerPlugin(useGSAP, ScrollTrigger, Flip);
 
 export const App: React.FC = () => {
+  // Web fonts (Syne/Outfit/Space Grotesk) load with display=swap, so the browser
+  // first renders with fallback-font metrics, then swaps in the real fonts and
+  // reflows. ScrollTriggers created on mount measure positions against the
+  // pre-swap layout, so pinned sections (Intro, Gallery) can desync from where
+  // they actually sit once fonts land — causing sections to visibly overlap
+  // mid-scroll. Refresh once fonts are ready (and again on full page load as a
+  // fallback for any image-driven shifts) to resync every trigger.
+  useEffect(() => {
+    const refresh = () => ScrollTrigger.refresh();
+    if (typeof document !== 'undefined' && 'fonts' in document) {
+      document.fonts.ready.then(refresh);
+    }
+    window.addEventListener('load', refresh);
+    return () => window.removeEventListener('load', refresh);
+  }, []);
+
   return (
     <Router>
-      <div className="relative min-h-screen bg-[#050505] text-[#f5f5f7]">
+      <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: '#050505', color: '#f5f5f7' }}>
         {/* Ambient Film Grain & Cinematic Vignette Overlays */}
         <div className="ambient-film-grain" />
         <div className="cinematic-vignette" />

@@ -98,13 +98,14 @@ export const HeroSection: React.FC = () => {
       id="hero"
       style={{
         position: 'relative',
+        isolation: 'isolate',
         minHeight: '100vh',
         backgroundColor: '#050505',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        padding: '6rem 3.5rem 4rem',
+        padding: 'clamp(5.5rem, 16vw, 6rem) clamp(1.25rem, 6vw, 3.5rem) clamp(2rem, 6vw, 4rem)',
         borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
       }}
       aria-label="BMW M Series Hero"
@@ -112,6 +113,7 @@ export const HeroSection: React.FC = () => {
       {/* Background Vehicle Image with Parallax & Dramatic Studio Shadow */}
       <div
         ref={carWrapperRef}
+        className="hero-car-wrap"
         style={{
           position: 'absolute',
           right: '-5%',
@@ -186,9 +188,9 @@ export const HeroSection: React.FC = () => {
         {/* Main Headline: BUILT FOR THE UNFORGIVING */}
         <h1
           ref={headlineRef}
-          className="font-display"
+          className="font-display hero-headline"
           style={{
-            fontSize: 'clamp(3rem, 7.5vw, 6.8rem)',
+            fontSize: 'clamp(3rem, 7.4vw, 6.8rem)',
             fontWeight: 900,
             lineHeight: 0.95,
             letterSpacing: '-0.03em',
@@ -276,20 +278,22 @@ export const HeroSection: React.FC = () => {
 
       {/* Floating Specs Strip on the bottom left */}
       <div
+        className="hero-stats-strip"
         style={{
           position: 'absolute',
           bottom: '2rem',
-          left: '3.5rem',
-          right: '3.5rem',
+          left: 'clamp(1.25rem, 6vw, 3.5rem)',
+          right: 'clamp(1.25rem, 6vw, 3.5rem)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
+          flexWrap: 'wrap',
           borderTop: '1px solid rgba(255, 255, 255, 0.08)',
           paddingTop: '1.5rem',
           zIndex: 10,
         }}
       >
-        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap', rowGap: '1.25rem' }}>
           <div>
             <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff' }}>523 HP</div>
             <div className="font-tech" style={{ fontSize: '0.7rem', color: '#8e95a5', letterSpacing: '0.12em' }}>M4 MAX POWER</div>

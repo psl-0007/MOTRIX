@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Image Audit — BMW M Series</title>
+<style>
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:#050505;color:#f5f5f7;font-family:'Outfit',system-ui,sans-serif;
+       -webkit-font-smoothing:antialiased;padding:3rem clamp(1rem,4vw,3.5rem) 6rem}
+  header{max-width:1400px;margin:0 auto 3rem}
+  .stripes{display:inline-flex;height:4px;width:46px;transform:skewX(-24deg);
+          overflow:hidden;border-radius:1px;margin-bottom:1rem}
+  .stripes i{width:33.33%;height:100%}
+  .s1{background:#0066b1}.s2{background:#002b49}.s3{background:#e2001a}
+  h1{font-size:clamp(1.9rem,4vw,3rem);font-weight:900;letter-spacing:-.03em;
+     text-transform:uppercase;line-height:1}
+  .sub{color:#8e95a5;margin-top:.75rem;font-size:.95rem;max-width:62ch;line-height:1.6}
+  .stats{display:flex;flex-wrap:wrap;gap:2.5rem;margin-top:2rem;padding-top:1.5rem;
+         border-top:1px solid rgba(255,255,255,.08)}
+  .stat b{display:block;font-size:1.9rem;font-weight:800;line-height:1}
+  .stat span{font-size:.7rem;letter-spacing:.14em;color:#8e95a5;text-transform:uppercase}
+  .grid{max-width:1400px;margin:0 auto;display:grid;gap:1.5rem;
+        grid-template-columns:repeat(auto-fill,minmax(430px,1fr))}
+  @media (max-width:620px){.grid{grid-template-columns:1fr}}
+  .card{background:#0f1218;border:1px solid rgba(255,255,255,.08);border-radius:3px;
+        overflow:hidden;display:flex;flex-direction:column}
+  .thumb{position:relative;aspect-ratio:16/9;background:#070709;overflow:hidden}
+  .thumb img{width:100%;height:100%;object-fit:cover;display:block}
+  .meta{padding:1.4rem 1.5rem 1.6rem}
+  .hdr{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.5rem}
+  .id{font-family:'Space Grotesk',monospace;font-size:.72rem;letter-spacing:.14em;color:#e2001a;font-weight:700}
+  .slot{font-size:.6rem;letter-spacing:.12em;padding:3px 7px;border-radius:2px;font-weight:700}
+  .slot.hero{background:rgba(226,0,26,.16);color:#ff5c6e}
+  .slot.overview{background:rgba(0,102,177,.18);color:#5aa9e6}
+  .slot.detail{background:rgba(255,255,255,.07);color:#8e95a5}
+  .badge.hot{font-size:.6rem;letter-spacing:.1em;padding:3px 7px;border-radius:2px;
+            background:rgba(255,196,0,.14);color:#ffc400;font-weight:700}
+  h3{font-family:'Space Grotesk',monospace;font-size:1rem;font-weight:700;margin-bottom:1rem;word-break:break-all}
+  dl{display:grid;grid-template-columns:1fr 1fr;gap:.5rem 1rem;margin-bottom:1.4rem}
+  dl div{min-width:0}
+  dt{font-size:.62rem;letter-spacing:.12em;color:#555b6a;text-transform:uppercase;margin-bottom:2px}
+  dd{font-size:.84rem;color:#d7dae2}
+  h4{font-size:.64rem;letter-spacing:.14em;color:#8e95a5;text-transform:uppercase;
+     padding-top:1rem;border-top:1px solid rgba(255,255,255,.07);margin-bottom:.7rem}
+  .uses{list-style:none;display:flex;flex-direction:column;gap:.6rem}
+  .uses li{display:flex;flex-direction:column;gap:2px;padding-left:.7rem;
+          border-left:2px solid rgba(226,0,26,.45)}
+  code{font-family:'Space Grotesk',monospace;font-size:.73rem;color:#f5f5f7;word-break:break-all}
+  .u{font-size:.78rem;color:#8e95a5}
+  .fit{font-family:'Space Grotesk',monospace;font-size:.66rem;color:#555b6a}
+  .warn{font-size:.6rem;letter-spacing:.1em;color:#ffc400;font-weight:700;margin-top:2px}
+  footer{max-width:1400px;margin:3.5rem auto 0;padding-top:2rem;
+         border-top:1px solid rgba(255,255,255,.08);color:#8e95a5;font-size:.88rem;line-height:1.7}
+  footer h2{font-size:1.1rem;color:#f5f5f7;margin-bottom:1rem;letter-spacing:.02em}
+  footer ol{padding-left:1.3rem;display:flex;flex-direction:column;gap:.6rem}
+  footer strong{color:#f5f5f7}
+</style></head><body>
+<header>
+  <div class="stripes"><i class="s1"></i><i class="s2"></i><i class="s3"></i></div>
+  <h1>Image Audit — Contact Sheet</h1>
+  <p class="sub">Every image currently rendered by the site, where it comes from, and every
+  place it is used. Read-only: nothing here has been changed. Replace a file in
+  <code>public/images/cars/</code> and point its config entry at the new path.</p>
+  <div class="stats">
+    <div class="stat"><b>16</b><span>Unique files</span></div>
+    <div class="stat"><b>37</b><span>Render sites</span></div>
+    <div class="stat"><b>7.2 MB</b><span>Total weight</span></div>
+    <div class="stat"><b>2</b><span>Hardcoded paths</span></div>
+  </div>
+</header>
+<main class="grid">
+<article class="card">
+  <div class="thumb"><img src="/images/models/m2-hero.jpg" alt="m2-hero.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-01</span><span class="slot hero">HERO</span><span class='badge hot'>reused ×4</span></div>
+    <h3>m2-hero.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M2</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×951 px</dd></div>
+      <div><dt>Aspect</dt><dd>2.019 (640:317)</dd></div>
+      <div><dt>Weight</dt><dd>453 KB</dd></div>
+    </dl>
+    <h4>Used in 4 places</h4>
+    <ul class="uses"><li><code>models.ts → m2.heroImage</code><span class='u'>Lineup card (BMW M2)</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m2.heroImage</code><span class='u'>Card→hero expansion overlay</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m2.heroImage</code><span class='u'>/models/m2 page hero</span><span class='fit'>object-fit: cover / center 40%</span></li><li><code>models.ts → m2.details[0].image</code><span class='u'>/models/m2 design detail 1</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m2-rear.jpg" alt="m2-rear.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-02</span><span class="slot overview">OVERVIEW</span><span class='badge hot'>reused ×2</span></div>
+    <h3>m2-rear.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M2</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×973 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.973 (1920:973)</dd></div>
+      <div><dt>Weight</dt><dd>429 KB</dd></div>
+    </dl>
+    <h4>Used in 2 places</h4>
+    <ul class="uses"><li><code>models.ts → m2.overviewImage</code><span class='u'>/models/m2 overview block</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m2.details[2].image</code><span class='u'>/models/m2 design detail 3</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m2-interior.jpg" alt="m2-interior.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-03</span><span class="slot detail">DETAIL</span></div>
+    <h3>m2-interior.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M2</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×1280 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.5 (3:2)</dd></div>
+      <div><dt>Weight</dt><dd>501 KB</dd></div>
+    </dl>
+    <h4>Used in 1 place</h4>
+    <ul class="uses"><li><code>models.ts → m2.details[1].image</code><span class='u'>/models/m2 design detail 2</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m3-hero.jpg" alt="m3-hero.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-04</span><span class="slot hero">HERO</span><span class='badge hot'>reused ×4</span></div>
+    <h3>m3-hero.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M3</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×1069 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.796 (1920:1069)</dd></div>
+      <div><dt>Weight</dt><dd>488 KB</dd></div>
+    </dl>
+    <h4>Used in 4 places</h4>
+    <ul class="uses"><li><code>models.ts → m3.heroImage</code><span class='u'>Lineup card (BMW M3)</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m3.heroImage</code><span class='u'>Card→hero expansion overlay</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m3.heroImage</code><span class='u'>/models/m3 page hero</span><span class='fit'>object-fit: cover / center 40%</span></li><li><code>models.ts → m3.details[0].image</code><span class='u'>/models/m3 design detail 1</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m3-rear.jpg" alt="m3-rear.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-05</span><span class="slot overview">OVERVIEW</span><span class='badge hot'>reused ×2</span></div>
+    <h3>m3-rear.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M3</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×818 px</dd></div>
+      <div><dt>Aspect</dt><dd>2.347 (960:409)</dd></div>
+      <div><dt>Weight</dt><dd>341 KB</dd></div>
+    </dl>
+    <h4>Used in 2 places</h4>
+    <ul class="uses"><li><code>models.ts → m3.overviewImage</code><span class='u'>/models/m3 overview block</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m3.details[1].image</code><span class='u'>/models/m3 design detail 2</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m3-front.jpg" alt="m3-front.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-06</span><span class="slot detail">DETAIL</span></div>
+    <h3>m3-front.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M3</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×1278 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.502 (320:213)</dd></div>
+      <div><dt>Weight</dt><dd>756 KB</dd></div>
+    </dl>
+    <h4>Used in 1 place</h4>
+    <ul class="uses"><li><code>models.ts → m3.details[2].image</code><span class='u'>/models/m3 design detail 3</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m4-hero.jpg" alt="m4-hero.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-07</span><span class="slot hero">HERO</span><span class='badge hot'>reused ×6</span></div>
+    <h3>m4-hero.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M4</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×987 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.945 (640:329)</dd></div>
+      <div><dt>Weight</dt><dd>315 KB</dd></div>
+    </dl>
+    <h4>Used in 6 places</h4>
+    <ul class="uses"><li><code>IntroSequence.tsx:206</code><span class='u'>Intro car reveal (scroll-split BMW letters)</span><span class='fit'>object-fit: cover / center 45%</span><span class='warn'>HARDCODED</span></li><li><code>HeroSection.tsx:129</code><span class='u'>Homepage hero background car</span><span class='fit'>object-fit: contain / right center</span><span class='warn'>HARDCODED</span></li><li><code>models.ts → m4.heroImage</code><span class='u'>Lineup card (BMW M4)</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m4.heroImage</code><span class='u'>Card→hero expansion overlay</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m4.heroImage</code><span class='u'>/models/m4 page hero</span><span class='fit'>object-fit: cover / center 40%</span></li><li><code>models.ts → m4.details[0].image</code><span class='u'>/models/m4 design detail 1</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m4-rear.jpg" alt="m4-rear.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-08</span><span class="slot overview">OVERVIEW</span></div>
+    <h3>m4-rear.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M4</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×853 px</dd></div>
+      <div><dt>Aspect</dt><dd>2.251 (1920:853)</dd></div>
+      <div><dt>Weight</dt><dd>403 KB</dd></div>
+    </dl>
+    <h4>Used in 1 place</h4>
+    <ul class="uses"><li><code>models.ts → m4.overviewImage</code><span class='u'>/models/m4 overview block</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m4-interior.jpg" alt="m4-interior.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-09</span><span class="slot detail">DETAIL</span></div>
+    <h3>m4-interior.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M4</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×1280 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.5 (3:2)</dd></div>
+      <div><dt>Weight</dt><dd>432 KB</dd></div>
+    </dl>
+    <h4>Used in 1 place</h4>
+    <ul class="uses"><li><code>models.ts → m4.details[1].image</code><span class='u'>/models/m4 design detail 2</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m4-engine.jpg" alt="m4-engine.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-10</span><span class="slot detail">DETAIL</span></div>
+    <h3>m4-engine.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M4</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×1280 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.5 (3:2)</dd></div>
+      <div><dt>Weight</dt><dd>503 KB</dd></div>
+    </dl>
+    <h4>Used in 1 place</h4>
+    <ul class="uses"><li><code>models.ts → m4.details[2].image</code><span class='u'>/models/m4 design detail 3</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m5-hero.jpg" alt="m5-hero.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-11</span><span class="slot hero">HERO</span><span class='badge hot'>reused ×4</span></div>
+    <h3>m5-hero.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M5</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×1004 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.912 (480:251)</dd></div>
+      <div><dt>Weight</dt><dd>475 KB</dd></div>
+    </dl>
+    <h4>Used in 4 places</h4>
+    <ul class="uses"><li><code>models.ts → m5.heroImage</code><span class='u'>Lineup card (BMW M5)</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m5.heroImage</code><span class='u'>Card→hero expansion overlay</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m5.heroImage</code><span class='u'>/models/m5 page hero</span><span class='fit'>object-fit: cover / center 40%</span></li><li><code>models.ts → m5.details[0].image</code><span class='u'>/models/m5 design detail 1</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m5-rear.jpg" alt="m5-rear.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-12</span><span class="slot overview">OVERVIEW</span><span class='badge hot'>reused ×2</span></div>
+    <h3>m5-rear.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M5</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×1093 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.757 (1920:1093)</dd></div>
+      <div><dt>Weight</dt><dd>441 KB</dd></div>
+    </dl>
+    <h4>Used in 2 places</h4>
+    <ul class="uses"><li><code>models.ts → m5.overviewImage</code><span class='u'>/models/m5 overview block</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m5.details[2].image</code><span class='u'>/models/m5 design detail 3</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m5-detail.jpg" alt="m5-detail.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-13</span><span class="slot detail">DETAIL</span></div>
+    <h3>m5-detail.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M5</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×1074 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.788 (320:179)</dd></div>
+      <div><dt>Weight</dt><dd>543 KB</dd></div>
+    </dl>
+    <h4>Used in 1 place</h4>
+    <ul class="uses"><li><code>models.ts → m5.details[1].image</code><span class='u'>/models/m5 design detail 2</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m8-hero.jpg" alt="m8-hero.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-14</span><span class="slot hero">HERO</span><span class='badge hot'>reused ×4</span></div>
+    <h3>m8-hero.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M8</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×954 px</dd></div>
+      <div><dt>Aspect</dt><dd>2.013 (320:159)</dd></div>
+      <div><dt>Weight</dt><dd>520 KB</dd></div>
+    </dl>
+    <h4>Used in 4 places</h4>
+    <ul class="uses"><li><code>models.ts → m8.heroImage</code><span class='u'>Lineup card (BMW M8)</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m8.heroImage</code><span class='u'>Card→hero expansion overlay</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m8.heroImage</code><span class='u'>/models/m8 page hero</span><span class='fit'>object-fit: cover / center 40%</span></li><li><code>models.ts → m8.details[0].image</code><span class='u'>/models/m8 design detail 1</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m8-rear.jpg" alt="m8-rear.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-15</span><span class="slot overview">OVERVIEW</span><span class='badge hot'>reused ×2</span></div>
+    <h3>m8-rear.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M8</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×912 px</dd></div>
+      <div><dt>Aspect</dt><dd>2.105 (40:19)</dd></div>
+      <div><dt>Weight</dt><dd>313 KB</dd></div>
+    </dl>
+    <h4>Used in 2 places</h4>
+    <ul class="uses"><li><code>models.ts → m8.overviewImage</code><span class='u'>/models/m8 overview block</span><span class='fit'>object-fit: cover</span></li><li><code>models.ts → m8.details[2].image</code><span class='u'>/models/m8 design detail 3</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article>
+<article class="card">
+  <div class="thumb"><img src="/images/models/m8-side.jpg" alt="m8-side.jpg" loading="lazy"></div>
+  <div class="meta">
+    <div class="hdr"><span class="id">IMG-16</span><span class="slot detail">DETAIL</span></div>
+    <h3>m8-side.jpg</h3>
+    <dl>
+      <div><dt>Model</dt><dd>BMW M8</dd></div>
+      <div><dt>Type</dt><dd>Local file · <code>public/images/models/</code></dd></div>
+      <div><dt>Dimensions</dt><dd>1920×996 px</dd></div>
+      <div><dt>Aspect</dt><dd>1.928 (160:83)</dd></div>
+      <div><dt>Weight</dt><dd>432 KB</dd></div>
+    </dl>
+    <h4>Used in 1 place</h4>
+    <ul class="uses"><li><code>models.ts → m8.details[1].image</code><span class='u'>/models/m8 design detail 2</span><span class='fit'>object-fit: cover</span></li></ul>
+  </div>
+</article></main>
+<footer>
+  <h2>How to replace these</h2>
+  <ol>
+    <li>Drop replacements into <strong>public/images/cars/</strong> — keep the same base
+        filenames (<code>m2-hero.jpg</code> and so on) and the swap needs no code change at all.</li>
+    <li>Match the <strong>aspect ratio</strong> shown on each card. Everything is 1920px wide;
+        heroes sit near 2.0 (wide cinematic crop), interiors and engines at 1.5.</li>
+    <li>Every <span class="slot hero">HERO</span> file is used in <strong>four</strong> places —
+        lineup card, expansion overlay, page hero, and first design detail. Pick one that
+        survives a tight crop at all four.</li>
+    <li><code>m4-hero.jpg</code> additionally drives the intro reveal and homepage hero. In the
+        homepage hero it renders <strong>object-fit: contain</strong>, so a transparent-background
+        PNG cutout looks dramatically better there than a boxed photo.</li>
+    <li>Keep files under roughly <strong>500 KB</strong>. WebP at quality 82 will roughly halve
+        the current weight at the same visual quality.</li>
+  </ol>
+</footer></body></html>

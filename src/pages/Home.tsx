@@ -2,7 +2,7 @@ import React from 'react';
 import { IntroSequence } from '../components/IntroSequence';
 import { HeroSection } from '../components/HeroSection';
 import { HorizontalModelGallery } from '../components/HorizontalModelGallery';
-import { Flame, Shield, Gauge, Cpu, ArrowUpRight } from 'lucide-react';
+import { Flame, Shield, Gauge } from 'lucide-react';
 import { BMW_MODELS } from '../data/models';
 import { Link } from 'react-router-dom';
 
@@ -23,7 +23,7 @@ export const Home: React.FC = () => {
         id="philosophy"
         style={{
           position: 'relative',
-          padding: '8rem 3.5rem',
+          padding: 'clamp(4rem, 10vw, 8rem) clamp(1.25rem, 6vw, 3.5rem)',
           maxWidth: '1400px',
           margin: '0 auto',
           borderTop: '1px solid rgba(255, 255, 255, 0.08)',
@@ -86,7 +86,7 @@ export const Home: React.FC = () => {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(min(320px, 100%), 1fr))',
             gap: '2.5rem',
           }}
         >
@@ -159,7 +159,7 @@ export const Home: React.FC = () => {
       <footer
         style={{
           borderTop: '1px solid rgba(255, 255, 255, 0.06)',
-          padding: '4rem 3.5rem',
+          padding: 'clamp(2.5rem, 8vw, 4rem) clamp(1.25rem, 6vw, 3.5rem)',
           backgroundColor: '#030303',
           display: 'flex',
           justifyContent: 'space-between',
