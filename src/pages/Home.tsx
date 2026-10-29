@@ -8,7 +8,7 @@ import { Link } from 'react-router-dom';
 
 export const Home: React.FC = () => {
   return (
-    <div style={{ backgroundColor: '#050505', color: '#f5f5f7', overflowX: 'hidden' }}>
+    <div style={{ backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)', overflowX: 'hidden' }}>
       {/* 1. Cinematic Opening BMW Typography Reveal */}
       <IntroSequence />
 
@@ -26,7 +26,7 @@ export const Home: React.FC = () => {
           padding: 'clamp(4rem, 10vw, 8rem) clamp(1.25rem, 6vw, 3.5rem)',
           maxWidth: '1400px',
           margin: '0 auto',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid rgba(var(--overlay-rgb), 0.08)',
         }}
       >
         <div style={{ maxWidth: '800px', marginBottom: '5rem' }}>
@@ -47,7 +47,7 @@ export const Home: React.FC = () => {
               className="font-tech"
               style={{
                 fontSize: '0.8rem',
-                color: '#e2001a',
+                color: 'var(--m-red)',
                 letterSpacing: '0.25em',
                 fontWeight: 700,
                 textTransform: 'uppercase',
@@ -61,10 +61,10 @@ export const Home: React.FC = () => {
             className="font-display"
             style={{
               fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
-              fontWeight: 900,
+              fontWeight: 800,
               lineHeight: 1.05,
               letterSpacing: '-0.03em',
-              color: '#ffffff',
+              color: 'var(--text-heading)',
               marginBottom: '1.5rem',
             }}
           >
@@ -74,7 +74,7 @@ export const Home: React.FC = () => {
           <p
             style={{
               fontSize: '1.2rem',
-              color: '#8e95a5',
+              color: 'var(--text-secondary)',
               lineHeight: 1.6,
             }}
           >
@@ -93,20 +93,20 @@ export const Home: React.FC = () => {
           <div
             style={{
               padding: '2.5rem',
-              backgroundColor: '#0a0c10',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid rgba(var(--overlay-rgb), 0.06)',
               borderRadius: '2px',
-              borderTop: '2px solid #0066b1',
+              borderTop: '2px solid var(--m-blue)',
             }}
           >
-            <Gauge size={28} color="#0066b1" style={{ marginBottom: '1.5rem' }} />
+            <Gauge size={28} color="var(--m-blue)" style={{ marginBottom: '1.5rem' }} />
             <h3
               className="font-display"
-              style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem', color: '#fff' }}
+              style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem', color: 'var(--text-heading)' }}
             >
               TwinPower & M Hybrid
             </h3>
-            <p style={{ color: '#8e95a5', lineHeight: 1.6, fontSize: '0.95rem' }}>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, fontSize: '0.95rem' }}>
               High-revving inline-six and twin-turbocharged V8 engines paired with instantaneous hybrid response deliver immediate throttle modulation and relentless top-end power.
             </p>
           </div>
@@ -114,20 +114,20 @@ export const Home: React.FC = () => {
           <div
             style={{
               padding: '2.5rem',
-              backgroundColor: '#0a0c10',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid rgba(var(--overlay-rgb), 0.06)',
               borderRadius: '2px',
-              borderTop: '2px solid #002b49',
+              borderTop: '2px solid var(--m-dark-blue)',
             }}
           >
-            <Shield size={28} color="#8e97a4" style={{ marginBottom: '1.5rem' }} />
+            <Shield size={28} color="var(--m-silver)" style={{ marginBottom: '1.5rem' }} />
             <h3
               className="font-display"
-              style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem', color: '#fff' }}
+              style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem', color: 'var(--text-heading)' }}
             >
               Intelligent Lightweight Design
             </h3>
-            <p style={{ color: '#8e95a5', lineHeight: 1.6, fontSize: '0.95rem' }}>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, fontSize: '0.95rem' }}>
               Extensive utilization of carbon fiber reinforced plastic (CFRP) on roofs, chassis bracing, and optional bucket seats lowers the center of gravity and elevates torsional rigidity.
             </p>
           </div>
@@ -135,20 +135,20 @@ export const Home: React.FC = () => {
           <div
             style={{
               padding: '2.5rem',
-              backgroundColor: '#0a0c10',
-              border: '1px solid rgba(255, 255, 255, 0.06)',
+              backgroundColor: 'var(--bg-surface)',
+              border: '1px solid rgba(var(--overlay-rgb), 0.06)',
               borderRadius: '2px',
-              borderTop: '2px solid #e2001a',
+              borderTop: '2px solid var(--m-red)',
             }}
           >
-            <Flame size={28} color="#e2001a" style={{ marginBottom: '1.5rem' }} />
+            <Flame size={28} color="var(--m-red)" style={{ marginBottom: '1.5rem' }} />
             <h3
               className="font-display"
-              style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem', color: '#fff' }}
+              style={{ fontSize: '1.5rem', fontWeight: 800, marginBottom: '0.75rem', color: 'var(--text-heading)' }}
             >
               Adaptive M Dynamics
             </h3>
-            <p style={{ color: '#8e95a5', lineHeight: 1.6, fontSize: '0.95rem' }}>
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.6, fontSize: '0.95rem' }}>
               Rear-biased M xDrive with active electronic differentials and 2WD drift capability puts full control over lateral slip angles into the driver's hands.
             </p>
           </div>
@@ -158,9 +158,9 @@ export const Home: React.FC = () => {
       {/* Footer */}
       <footer
         style={{
-          borderTop: '1px solid rgba(255, 255, 255, 0.06)',
+          borderTop: '1px solid rgba(var(--overlay-rgb), 0.06)',
           padding: 'clamp(2.5rem, 8vw, 4rem) clamp(1.25rem, 6vw, 3.5rem)',
-          backgroundColor: '#030303',
+          backgroundColor: 'var(--bg-footer)',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
@@ -170,7 +170,7 @@ export const Home: React.FC = () => {
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
-            <span className="font-display" style={{ fontWeight: 900, fontSize: '1.25rem', letterSpacing: '0.15em' }}>
+            <span className="font-display" style={{ fontWeight: 800, fontSize: '1.25rem', letterSpacing: '0.15em' }}>
               BMW
             </span>
             <div className="m-badge-stripes">
@@ -178,9 +178,9 @@ export const Home: React.FC = () => {
               <span className="m-stripe-2"></span>
               <span className="m-stripe-3"></span>
             </div>
-            <span style={{ color: '#e2001a', fontWeight: 800 }}>///M</span>
+            <span style={{ color: 'var(--m-red)', fontWeight: 800 }}>///M</span>
           </div>
-          <p className="font-tech" style={{ fontSize: '0.75rem', color: '#555b6a', letterSpacing: '0.1em' }}>
+          <p className="font-tech" style={{ fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.1em' }}>
             OFFICIAL M MOTORSPORT CAMPAIGN EXPERIENCE • ALL FIVE MODELS CERTIFIED
           </p>
         </div>
@@ -193,12 +193,12 @@ export const Home: React.FC = () => {
               className="font-tech"
               style={{
                 fontSize: '0.8rem',
-                color: '#8e95a5',
+                color: 'var(--text-secondary)',
                 letterSpacing: '0.12em',
                 transition: 'color 0.2s ease',
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = '#e2001a')}
-              onMouseLeave={(e) => (e.currentTarget.style.color = '#8e95a5')}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'var(--m-red)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'var(--text-secondary)')}
             >
               {m.shortName}
             </Link>

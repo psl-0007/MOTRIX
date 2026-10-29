@@ -78,7 +78,7 @@ export const ModelCard: React.FC<ModelCardProps> = ({
           style={{
             fontSize: '0.8rem',
             letterSpacing: '0.2em',
-            color: '#8e95a5',
+            color: 'var(--text-secondary)',
           }}
         >
           {model.index} / 05
@@ -104,7 +104,7 @@ export const ModelCard: React.FC<ModelCardProps> = ({
           className="font-tech"
           style={{
             fontSize: '0.75rem',
-            color: '#e2001a',
+            color: 'var(--m-red)',
             letterSpacing: '0.2em',
             fontWeight: 700,
             textTransform: 'uppercase',
@@ -118,9 +118,9 @@ export const ModelCard: React.FC<ModelCardProps> = ({
           className="font-display"
           style={{
             fontSize: 'clamp(2.4rem, 4.5vw, 3.4rem)',
-            fontWeight: 900,
+            fontWeight: 800,
             lineHeight: 1,
-            color: '#f5f5f7',
+            color: 'var(--text-primary)',
             marginBottom: '1rem',
             letterSpacing: '-0.03em',
           }}
@@ -133,28 +133,28 @@ export const ModelCard: React.FC<ModelCardProps> = ({
           style={{
             display: 'flex',
             gap: '1.25rem',
-            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+            borderTop: '1px solid rgba(var(--overlay-rgb), 0.1)',
             paddingTop: '1rem',
             marginBottom: '1.25rem',
           }}
         >
           <div>
-            <div className="font-tech" style={{ fontSize: '0.65rem', color: '#8e95a5' }}>POWER</div>
-            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>
+            <div className="font-tech" style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>POWER</div>
+            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)' }}>
               {model.specs.power}
             </div>
           </div>
-          <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
+          <div style={{ width: '1px', backgroundColor: 'rgba(var(--overlay-rgb), 0.1)' }} />
           <div>
-            <div className="font-tech" style={{ fontSize: '0.65rem', color: '#8e95a5' }}>0–60 MPH</div>
-            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>
+            <div className="font-tech" style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>0–60 MPH</div>
+            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)' }}>
               {model.specs.acceleration}
             </div>
           </div>
-          <div style={{ width: '1px', backgroundColor: 'rgba(255,255,255,0.1)' }} />
+          <div style={{ width: '1px', backgroundColor: 'rgba(var(--overlay-rgb), 0.1)' }} />
           <div>
-            <div className="font-tech" style={{ fontSize: '0.65rem', color: '#8e95a5' }}>CHASSIS</div>
-            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>
+            <div className="font-tech" style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>CHASSIS</div>
+            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)' }}>
               {model.chassisCode}
             </div>
           </div>
@@ -169,12 +169,12 @@ export const ModelCard: React.FC<ModelCardProps> = ({
             fontSize: '0.8rem',
             fontWeight: 700,
             letterSpacing: '0.15em',
-            color: '#ffffff',
+            color: 'var(--text-heading)',
             textTransform: 'uppercase',
           }}
         >
           <span>EXPLORE MODEL</span>
-          <ArrowRight size={16} color="#e2001a" />
+          <ArrowRight size={16} color="var(--m-red)" />
         </div>
       </div>
     </div>

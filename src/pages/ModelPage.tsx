@@ -36,15 +36,15 @@ export const ModelPage: React.FC = () => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#050505',
-          color: '#fff',
+          backgroundColor: 'var(--bg-primary)',
+          color: 'var(--text-heading)',
           padding: '2rem',
         }}
       >
         <h1 className="font-display" style={{ fontSize: '3rem', marginBottom: '1rem' }}>
           MODEL NOT FOUND
         </h1>
-        <p style={{ color: '#8e95a5', marginBottom: '2rem' }}>
+        <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
           Please choose from our five featured models: M2, M3, M4, M5, or M8.
         </p>
         <Link to="/" className="btn-m-primary">
@@ -57,6 +57,26 @@ export const ModelPage: React.FC = () => {
   // Coordinated GSAP Scroll Animations for 5-Stage Progressive Storytelling
   useGSAP(
     () => {
+      const mm = gsap.matchMedia();
+
+      // Reduced motion: every stage's finished state is set immediately, with no
+      // entrance tweens, no stagger, and — most importantly — no Stage 2 parallax
+      // scrub (continuous scroll-linked movement is the main vestibular trigger).
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set(['.model-hero-title', '.model-hero-tagline', '.model-hero-img', '.model-hero-indicator'], {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+        });
+        gsap.set('.statement-line', { opacity: 1, y: 0 });
+        gsap.set('.spec-cell', { opacity: 1, y: 0 });
+        gsap.set('.detail-img', { clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)', scale: 1 });
+        gsap.set('.detail-text', { opacity: 1, x: 0 });
+        gsap.set('.stage-final-content', { opacity: 1, y: 0 });
+        ScrollTrigger.refresh();
+      });
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
       // Stage 1 Entrance: Oversized Vehicle & Model Name
       const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
@@ -190,6 +210,7 @@ export const ModelPage: React.FC = () => {
 
       // Refresh ScrollTrigger to ensure exact trigger coordinates
       ScrollTrigger.refresh();
+      });
     },
     { dependencies: [id], scope: pageContainerRef, revertOnUpdate: true }
   );
@@ -198,8 +219,8 @@ export const ModelPage: React.FC = () => {
     <div
       ref={pageContainerRef}
       style={{
-        backgroundColor: '#050505',
-        color: '#f5f5f7',
+        backgroundColor: 'var(--bg-primary)',
+        color: 'var(--text-primary)',
         minHeight: '100vh',
         overflowX: 'hidden',
         position: 'relative',
@@ -222,22 +243,22 @@ export const ModelPage: React.FC = () => {
             alignItems: 'center',
             gap: '8px',
             padding: '8px 14px',
-            backgroundColor: 'rgba(5, 5, 5, 0.75)',
+            backgroundColor: 'rgba(var(--bg-primary-rgb), 0.75)',
             backdropFilter: 'blur(8px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
+            border: '1px solid rgba(var(--overlay-rgb), 0.1)',
             borderRadius: '2px',
             fontSize: '0.75rem',
-            color: '#8e95a5',
+            color: 'var(--text-secondary)',
             letterSpacing: '0.12em',
             transition: 'all 0.3s ease',
           }}
           onMouseEnter={(e) => {
-            e.currentTarget.style.color = '#fff';
-            e.currentTarget.style.borderColor = '#e2001a';
+            e.currentTarget.style.color = 'var(--text-heading)';
+            e.currentTarget.style.borderColor = 'var(--m-red)';
           }}
           onMouseLeave={(e) => {
-            e.currentTarget.style.color = '#8e95a5';
-            e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+            e.currentTarget.style.color = 'var(--text-secondary)';
+            e.currentTarget.style.borderColor = 'rgba(var(--overlay-rgb), 0.1)';
           }}
           aria-label="Back to lineup"
         >
@@ -289,7 +310,7 @@ export const ModelPage: React.FC = () => {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(180deg, rgba(5,5,5,0.4) 0%, rgba(5,5,5,0.2) 40%, #050505 100%)',
+              background: 'linear-gradient(180deg, rgba(var(--bg-primary-rgb), 0.4) 0%, rgba(var(--bg-primary-rgb), 0.2) 40%, var(--bg-primary) 100%)',
             }}
           />
         </div>
@@ -301,7 +322,7 @@ export const ModelPage: React.FC = () => {
             style={{
               fontSize: '0.9rem',
               letterSpacing: '0.3em',
-              color: '#e2001a',
+              color: 'var(--m-red)',
               textTransform: 'uppercase',
               marginBottom: '0.75rem',
               fontWeight: 700,
@@ -314,9 +335,12 @@ export const ModelPage: React.FC = () => {
             className="model-hero-title font-display will-animate"
             style={{
               fontSize: 'clamp(4rem, 11vw, 10rem)',
-              fontWeight: 900,
+              fontWeight: 800,
               lineHeight: 0.9,
               letterSpacing: '-0.04em',
+              // Constant white: sits directly on the hero photo (still dark/vivid
+              // at this height, before the bottom gradient fully fades to bg), not
+              // on the page background, so it shouldn't flip with the theme.
               color: '#ffffff',
               marginBottom: '1.25rem',
               textTransform: 'uppercase',
@@ -329,7 +353,7 @@ export const ModelPage: React.FC = () => {
             className="model-hero-tagline will-animate"
             style={{
               fontSize: 'clamp(1.15rem, 2.2vw, 1.6rem)',
-              color: '#8e95a5',
+              color: '#c3c7cf',
               maxWidth: '650px',
               fontWeight: 400,
               lineHeight: 1.45,
@@ -349,7 +373,7 @@ export const ModelPage: React.FC = () => {
             display: 'flex',
             alignItems: 'center',
             gap: '10px',
-            color: '#8e95a5',
+            color: '#c3c7cf',
             zIndex: 10,
           }}
         >
@@ -377,7 +401,7 @@ export const ModelPage: React.FC = () => {
           className="font-tech"
           style={{
             fontSize: '0.8rem',
-            color: '#e2001a',
+            color: 'var(--m-red)',
             letterSpacing: '0.25em',
             marginBottom: '1.5rem',
             textTransform: 'uppercase',
@@ -402,7 +426,7 @@ export const ModelPage: React.FC = () => {
             fontWeight: 800,
             lineHeight: 1.15,
             letterSpacing: '-0.02em',
-            color: '#ffffff',
+            color: 'var(--text-heading)',
             marginBottom: '3rem',
           }}
         >
@@ -419,7 +443,7 @@ export const ModelPage: React.FC = () => {
             display: 'grid',
             gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
             gap: '3rem',
-            borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+            borderTop: '1px solid rgba(var(--overlay-rgb), 0.1)',
             paddingTop: '2.5rem',
           }}
         >
@@ -427,7 +451,7 @@ export const ModelPage: React.FC = () => {
             <p
               style={{
                 fontSize: '1.15rem',
-                color: '#8e95a5',
+                color: 'var(--text-secondary)',
                 lineHeight: 1.7,
                 marginBottom: '1.5rem',
               }}
@@ -437,7 +461,7 @@ export const ModelPage: React.FC = () => {
           </div>
           <div
             style={{
-              borderLeft: '2px solid #e2001a',
+              borderLeft: '2px solid var(--m-red)',
               paddingLeft: '1.75rem',
               display: 'flex',
               flexDirection: 'column',
@@ -449,14 +473,14 @@ export const ModelPage: React.FC = () => {
               style={{
                 fontSize: '1.35rem',
                 fontWeight: 700,
-                color: '#ffffff',
+                color: 'var(--text-heading)',
                 fontStyle: 'italic',
                 marginBottom: '0.75rem',
               }}
             >
               "{model.quote}"
             </blockquote>
-            <cite className="font-tech" style={{ fontSize: '0.75rem', color: '#8e95a5', letterSpacing: '0.12em' }}>
+            <cite className="font-tech" style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', letterSpacing: '0.12em' }}>
               BMW M MOTORSPORT ENGINEERING TEAM
             </cite>
           </div>
@@ -471,9 +495,9 @@ export const ModelPage: React.FC = () => {
         style={{
           position: 'relative',
           padding: 'clamp(3.5rem, 10vw, 6rem) clamp(1.25rem, 6vw, 3.5rem) clamp(4rem, 12vw, 8rem)',
-          backgroundColor: '#0a0c10',
-          borderTop: '1px solid rgba(255, 255, 255, 0.05)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+          backgroundColor: 'var(--bg-surface)',
+          borderTop: '1px solid rgba(var(--overlay-rgb), 0.05)',
+          borderBottom: '1px solid rgba(var(--overlay-rgb), 0.05)',
           zIndex: 10,
         }}
       >
@@ -493,7 +517,7 @@ export const ModelPage: React.FC = () => {
                 className="font-tech"
                 style={{
                   fontSize: '0.8rem',
-                  color: '#e2001a',
+                  color: 'var(--m-red)',
                   letterSpacing: '0.25em',
                   marginBottom: '0.5rem',
                 }}
@@ -504,9 +528,9 @@ export const ModelPage: React.FC = () => {
                 className="font-display"
                 style={{
                   fontSize: 'clamp(2.2rem, 4vw, 3.5rem)',
-                  fontWeight: 900,
+                  fontWeight: 800,
                   letterSpacing: '-0.03em',
-                  color: '#ffffff',
+                  color: 'var(--text-heading)',
                 }}
               >
                 TECHNICAL SPECIFICATIONS
@@ -517,7 +541,7 @@ export const ModelPage: React.FC = () => {
               className="font-tech"
               style={{
                 fontSize: '0.8rem',
-                color: '#8e95a5',
+                color: 'var(--text-secondary)',
                 letterSpacing: '0.15em',
               }}
             >
@@ -581,7 +605,7 @@ export const ModelPage: React.FC = () => {
             className="font-tech"
             style={{
               fontSize: '0.8rem',
-              color: '#e2001a',
+              color: 'var(--m-red)',
               letterSpacing: '0.25em',
               marginBottom: '0.5rem',
             }}
@@ -592,9 +616,9 @@ export const ModelPage: React.FC = () => {
             className="font-display"
             style={{
               fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
-              fontWeight: 900,
+              fontWeight: 800,
               letterSpacing: '-0.03em',
-              color: '#ffffff',
+              color: 'var(--text-heading)',
             }}
           >
             SCULPTED BY THE WIND TUNNEL
@@ -625,7 +649,7 @@ export const ModelPage: React.FC = () => {
                     height: '520px',
                     borderRadius: '2px',
                     overflow: 'hidden',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    border: '1px solid rgba(var(--overlay-rgb), 0.1)',
                   }}
                 >
                   <img
@@ -642,7 +666,7 @@ export const ModelPage: React.FC = () => {
                     style={{
                       position: 'absolute',
                       inset: 0,
-                      background: 'linear-gradient(180deg, transparent 60%, rgba(5,5,5,0.7) 100%)',
+                      background: 'linear-gradient(180deg, transparent 60%, rgba(var(--bg-primary-rgb), 0.7) 100%)',
                     }}
                   />
                 </div>
@@ -660,7 +684,7 @@ export const ModelPage: React.FC = () => {
                     style={{
                       fontSize: '0.78rem',
                       letterSpacing: '0.2em',
-                      color: '#e2001a',
+                      color: 'var(--m-red)',
                       fontWeight: 700,
                     }}
                   >
@@ -672,7 +696,7 @@ export const ModelPage: React.FC = () => {
                       fontSize: 'clamp(2rem, 3.5vw, 3rem)',
                       fontWeight: 800,
                       letterSpacing: '-0.02em',
-                      color: '#ffffff',
+                      color: 'var(--text-heading)',
                       margin: '1rem 0 1.25rem',
                       lineHeight: 1.1,
                     }}
@@ -682,7 +706,7 @@ export const ModelPage: React.FC = () => {
                   <p
                     style={{
                       fontSize: '1.1rem',
-                      color: '#8e95a5',
+                      color: 'var(--text-secondary)',
                       lineHeight: 1.7,
                     }}
                   >
@@ -708,9 +732,9 @@ export const ModelPage: React.FC = () => {
           alignItems: 'center',
           justifyContent: 'center',
           padding: 'clamp(3.5rem, 10vw, 6rem) clamp(1.25rem, 6vw, 3.5rem)',
-          backgroundColor: '#050505',
+          backgroundColor: 'var(--bg-primary)',
           overflow: 'hidden',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid rgba(var(--overlay-rgb), 0.08)',
           zIndex: 10,
         }}
       >
@@ -737,7 +761,7 @@ export const ModelPage: React.FC = () => {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'radial-gradient(ellipse at center, transparent 30%, #050505 90%)',
+              background: 'radial-gradient(ellipse at center, transparent 30%, var(--bg-primary) 90%)',
             }}
           />
         </div>
@@ -749,7 +773,7 @@ export const ModelPage: React.FC = () => {
             position: 'relative',
             zIndex: 15,
             textAlign: 'center',
-            maxWidth: '800px',
+            maxWidth: '1000px',
           }}
         >
           <div className="m-badge-stripes" style={{ marginBottom: '1.5rem' }}>
@@ -763,7 +787,7 @@ export const ModelPage: React.FC = () => {
             style={{
               fontSize: '0.85rem',
               letterSpacing: '0.3em',
-              color: '#8e95a5',
+              color: 'var(--text-secondary)',
               textTransform: 'uppercase',
               marginBottom: '0.75rem',
             }}
@@ -775,9 +799,9 @@ export const ModelPage: React.FC = () => {
             className="font-display"
             style={{
               fontSize: 'clamp(2.8rem, 6vw, 5.5rem)',
-              fontWeight: 900,
+              fontWeight: 800,
               letterSpacing: '-0.03em',
-              color: '#ffffff',
+              color: 'var(--text-heading)',
               lineHeight: 1,
               marginBottom: '2.5rem',
               textTransform: 'uppercase',
@@ -826,7 +850,7 @@ export const ModelPage: React.FC = () => {
               className="font-tech"
               style={{
                 fontSize: '0.75rem',
-                color: '#555b6a',
+                color: 'var(--text-muted)',
                 letterSpacing: '0.2em',
                 marginBottom: '1.5rem',
                 textTransform: 'uppercase',
@@ -849,8 +873,8 @@ export const ModelPage: React.FC = () => {
                   to={`/models/${other.id}`}
                   style={{
                     padding: '12px 20px',
-                    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                    backgroundColor: 'rgba(var(--overlay-rgb), 0.03)',
+                    border: '1px solid rgba(var(--overlay-rgb), 0.08)',
                     borderRadius: '2px',
                     display: 'flex',
                     flexDirection: 'column',
@@ -859,18 +883,18 @@ export const ModelPage: React.FC = () => {
                     transition: 'all 0.3s ease',
                   }}
                   onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = '#e2001a';
+                    e.currentTarget.style.borderColor = 'var(--m-red)';
                     e.currentTarget.style.transform = 'translateY(-3px)';
                   }}
                   onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.borderColor = 'rgba(var(--overlay-rgb), 0.08)';
                     e.currentTarget.style.transform = 'translateY(0)';
                   }}
                 >
-                  <span className="font-display" style={{ fontWeight: 800, color: '#fff' }}>
+                  <span className="font-display" style={{ fontWeight: 800, color: 'var(--text-heading)' }}>
                     {other.name}
                   </span>
-                  <span className="font-tech" style={{ fontSize: '0.65rem', color: '#8e95a5' }}>
+                  <span className="font-tech" style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>
                     {other.specs.power} • {other.specs.acceleration}
                   </span>
                 </Link>

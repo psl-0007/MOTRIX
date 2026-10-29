@@ -8,6 +8,7 @@ import { Flip } from 'gsap/Flip';
 import { Navbar } from './components/Navbar';
 import { Home } from './pages/Home';
 import { ModelPage } from './pages/ModelPage';
+import { ThemeProvider } from './lib/theme';
 
 // Register all GSAP plugins once at application top-level as instructed by GSAP skills
 gsap.registerPlugin(useGSAP, ScrollTrigger, Flip);
@@ -30,23 +31,25 @@ export const App: React.FC = () => {
   }, []);
 
   return (
-    <Router>
-      <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: '#050505', color: '#f5f5f7' }}>
-        {/* Ambient Film Grain & Cinematic Vignette Overlays */}
-        <div className="ambient-film-grain" />
-        <div className="cinematic-vignette" />
+    <ThemeProvider>
+      <Router>
+        <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
+          {/* Ambient Film Grain & Cinematic Vignette Overlays */}
+          <div className="ambient-film-grain" />
+          <div className="cinematic-vignette" />
 
-        {/* Global Navigation */}
-        <Navbar />
+          {/* Global Navigation */}
+          <Navbar />
 
-        {/* Application Routes */}
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/models/:id" element={<ModelPage />} />
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </div>
-    </Router>
+          {/* Application Routes */}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/models/:id" element={<ModelPage />} />
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </div>
+      </Router>
+    </ThemeProvider>
   );
 };
 

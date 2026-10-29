@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90' font-family='sans-serif' font-weight='900' fill='%23E2001A'>///M</text></svg>" />
@@ -10,8 +10,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800;900&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <script>
+      // Runs before paint to avoid a flash of the wrong theme for returning
+      // visitors who previously chose light mode (the <html class="dark">
+      // default above only covers first-time visitors).
+      (function () {
+        try {
+          if (localStorage.getItem('bmw-m-theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
   </head>
-  <body class="bg-[#050505] text-[#f0f0f0] overflow-x-hidden selection:bg-[#E2001A] selection:text-white">
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

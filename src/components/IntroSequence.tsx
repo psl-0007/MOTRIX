@@ -20,6 +20,30 @@ export const IntroSequence: React.FC = () => {
     () => {
       if (!introContainerRef.current) return;
 
+      const mm = gsap.matchMedia();
+
+      // Users who've asked their OS for reduced motion get the finished state
+      // immediately: no staggered letter build, and critically no pinned
+      // scroll-jacking (pin + scrub is exactly the kind of motion that's
+      // disorienting for vestibular-sensitive users). They still get the full
+      // page — just without the scroll-driven choreography.
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        gsap.set([letterBRef.current, letterMRef.current, letterWRef.current], {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          xPercent: 0,
+        });
+        gsap.set(subtitleRef.current, { opacity: 1, y: 0 });
+        // Stays visible (just without its bounce — already neutralized by the
+        // global prefers-reduced-motion CSS rule on .animate-bounce)
+        gsap.set(scrollPromptRef.current, { opacity: 0.7, xPercent: -50, y: 0 });
+        // Leave the car-reveal layer hidden rather than statically showing it
+        // behind the wordmark — the car gets its proper moment in HeroSection
+        // right below, without the two headings visually colliding here.
+      });
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
       // Scroll-linked separation & car emergence timeline — created synchronously, right away,
       // so its pin-spacer reserves ~1200px of layout space from the very first paint. Creating
       // this lazily (e.g. only once the user starts scrolling) inserts that spacer into the
@@ -126,32 +150,33 @@ export const IntroSequence: React.FC = () => {
         return;
       }
 
-      // 1. Initial entrance timeline (on page load)
+      // 1. Initial entrance timeline (on page load) — a quick, confident mask/fade
+      // reveal rather than a long staggered build (~1.5s total vs. the previous ~2.9s).
       const entranceTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
       entranceTl
         .fromTo(
           [letterBRef.current, letterMRef.current, letterWRef.current],
-          { opacity: 0, scale: 0.9, y: 30 },
-          { opacity: 1, scale: 1, y: 0, duration: 1.2, stagger: 0.15 }
+          { opacity: 0, scale: 0.96, y: 16 },
+          { opacity: 1, scale: 1, y: 0, duration: 0.55, stagger: 0.06 }
         )
         .fromTo(
           lightSweepRef.current,
           { xPercent: -150, opacity: 0 },
-          { xPercent: 200, opacity: 0.8, duration: 1.6, ease: 'power2.inOut' },
-          '-=0.6'
+          { xPercent: 200, opacity: 0.8, duration: 1.1, ease: 'power2.inOut' },
+          '-=0.3'
         )
         .fromTo(
           subtitleRef.current,
-          { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.8 },
-          '-=0.8'
+          { opacity: 0, y: 12 },
+          { opacity: 1, y: 0, duration: 0.5 },
+          '-=0.6'
         )
         .fromTo(
           scrollPromptRef.current,
           { opacity: 0, xPercent: -50, y: 0 },
-          { opacity: 0.7, xPercent: -50, y: 0, duration: 0.6 },
-          '-=0.2'
+          { opacity: 0.7, xPercent: -50, y: 0, duration: 0.4 },
+          '-=0.15'
         );
 
       // If user starts scrolling during entrance, snap it to completion immediately
@@ -166,6 +191,7 @@ export const IntroSequence: React.FC = () => {
       return () => {
         window.removeEventListener('scroll', onEarlyScroll);
       };
+      });
     },
     { scope: introContainerRef }
   );
@@ -178,7 +204,7 @@ export const IntroSequence: React.FC = () => {
         position: 'relative',
         width: '100vw',
         height: '100vh',
-        backgroundColor: '#050505',
+        backgroundColor: 'var(--bg-primary)',
         overflow: 'hidden',
         display: 'flex',
         alignItems: 'center',
@@ -218,7 +244,7 @@ export const IntroSequence: React.FC = () => {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'radial-gradient(ellipse at center, transparent 35%, #050505 95%)',
+              background: 'radial-gradient(ellipse at center, transparent 35%, var(--bg-primary) 95%)',
             }}
           />
           <div
@@ -237,7 +263,7 @@ export const IntroSequence: React.FC = () => {
               style={{
                 fontSize: '0.85rem',
                 letterSpacing: '0.3em',
-                color: '#e2001a',
+                color: 'var(--m-red)',
                 marginBottom: '0.5rem',
                 textTransform: 'uppercase',
               }}
@@ -248,8 +274,10 @@ export const IntroSequence: React.FC = () => {
               className="font-display"
               style={{
                 fontSize: 'clamp(2rem, 5vw, 4.5rem)',
-                fontWeight: 900,
+                fontWeight: 800,
                 letterSpacing: '-0.03em',
+                /* Constant white, not theme-reactive: this sits directly on the
+                   car photo, which stays dark in both themes, not on the page bg */
                 color: '#ffffff',
                 lineHeight: 1.05,
               }}
@@ -281,11 +309,11 @@ export const IntroSequence: React.FC = () => {
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: 'clamp(3.5rem, 24vw, 22rem)',
-            fontWeight: 900,
+            fontWeight: 800,
             lineHeight: 0.85,
             fontFamily: 'var(--font-display)',
             letterSpacing: '-0.02em',
-            color: '#f5f5f7',
+            color: 'var(--text-primary)',
             overflow: 'hidden',
             padding: 'clamp(0.5rem, 3vw, 1rem) clamp(0.5rem, 4vw, 3rem)',
           }}
@@ -298,7 +326,7 @@ export const IntroSequence: React.FC = () => {
               top: 0,
               bottom: 0,
               width: '160px',
-              background: 'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent)',
+              background: 'linear-gradient(90deg, transparent, rgba(var(--overlay-rgb), 0.4), transparent)',
               transform: 'skewX(-25deg)',
               pointerEvents: 'none',
             }}
@@ -317,7 +345,7 @@ export const IntroSequence: React.FC = () => {
             ref={letterMRef}
             style={{
               display: 'inline-block',
-              color: '#ffffff',
+              color: 'var(--text-heading)',
               willChange: 'transform, opacity',
             }}
           >
@@ -389,13 +417,13 @@ export const IntroSequence: React.FC = () => {
           style={{
             fontSize: '0.68rem',
             letterSpacing: '0.25em',
-            color: '#8e95a5',
+            color: 'var(--text-secondary)',
             textTransform: 'uppercase',
           }}
         >
           SCROLL TO UNLEASH
         </span>
-        <ChevronDown size={18} color="#8e95a5" className="animate-bounce" />
+        <ChevronDown size={18} color="var(--text-secondary)" className="animate-bounce" />
       </div>
     </section>
   );

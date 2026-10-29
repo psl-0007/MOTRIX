@@ -35,10 +35,15 @@ export const HorizontalModelGallery: React.FC = () => {
       // Calculate total horizontal scroll distance
       const getScrollDistance = () => track.scrollWidth - window.innerWidth + 120;
 
-      // GSAP matchMedia to provide responsive desktop horizontal scroll vs mobile swipe
+      // GSAP matchMedia to provide responsive desktop horizontal scroll vs mobile swipe.
+      // Reduced-motion users get the same native-scroll fallback as mobile, regardless
+      // of viewport width — pin + scrub is a scroll-jacking pattern that's exactly the
+      // kind of motion `prefers-reduced-motion` is meant to suppress. The native-scroll
+      // path is enabled by a matching `prefers-reduced-motion` rule on
+      // `.model-gallery-section` in index.css.
       const mm = gsap.matchMedia();
 
-      mm.add('(min-width: 769px)', () => {
+      mm.add('(min-width: 769px) and (prefers-reduced-motion: no-preference)', () => {
         const horizontalTween = gsap.to(track, {
           x: () => -getScrollDistance(),
           ease: 'none', // MANDATORY ease: "none" according to gsap-scrolltrigger skill
@@ -70,8 +75,9 @@ export const HorizontalModelGallery: React.FC = () => {
         };
       });
 
-      mm.add('(max-width: 768px)', () => {
-        // Touch friendly horizontal layout on mobile: native swipe scroll, no pin
+      mm.add('(max-width: 768px), (prefers-reduced-motion: reduce)', () => {
+        // Touch friendly horizontal layout on mobile, and the reduced-motion
+        // fallback on any width: native swipe/scroll, no pin, no scrub.
         horizontalScrollTriggerRef.current = null;
         gsap.set(track, { x: 0 });
       });
@@ -183,7 +189,7 @@ export const HorizontalModelGallery: React.FC = () => {
         isolation: 'isolate',
         width: '100vw',
         minHeight: '100vh',
-        backgroundColor: '#050505',
+        backgroundColor: 'var(--bg-primary)',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -222,7 +228,7 @@ export const HorizontalModelGallery: React.FC = () => {
               className="font-tech"
               style={{
                 fontSize: '0.8rem',
-                color: '#e2001a',
+                color: 'var(--m-red)',
                 letterSpacing: '0.25em',
                 fontWeight: 700,
                 textTransform: 'uppercase',
@@ -236,10 +242,10 @@ export const HorizontalModelGallery: React.FC = () => {
             className="font-display"
             style={{
               fontSize: 'clamp(2.5rem, 5vw, 4.5rem)',
-              fontWeight: 900,
+              fontWeight: 800,
               lineHeight: 1,
               letterSpacing: '-0.03em',
-              color: '#f5f5f7',
+              color: 'var(--text-primary)',
               textTransform: 'uppercase',
             }}
           >
@@ -263,7 +269,7 @@ export const HorizontalModelGallery: React.FC = () => {
               style={{
                 fontSize: '1.1rem',
                 fontWeight: 700,
-                color: '#ffffff',
+                color: 'var(--text-heading)',
                 letterSpacing: '0.15em',
               }}
             >
@@ -283,11 +289,11 @@ export const HorizontalModelGallery: React.FC = () => {
                   width: '36px',
                   height: '36px',
                   borderRadius: '2px',
-                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  border: '1px solid rgba(var(--overlay-rgb), 0.1)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#8e95a5',
+                  color: 'var(--text-secondary)',
                 }}
               >
                 <ArrowLeft size={16} />
@@ -300,11 +306,11 @@ export const HorizontalModelGallery: React.FC = () => {
                   width: '36px',
                   height: '36px',
                   borderRadius: '2px',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  border: '1px solid rgba(var(--overlay-rgb), 0.2)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#ffffff',
+                  color: 'var(--text-heading)',
                 }}
               >
                 <ArrowRight size={16} />
@@ -317,7 +323,7 @@ export const HorizontalModelGallery: React.FC = () => {
             style={{
               width: '180px',
               height: '3px',
-              backgroundColor: 'rgba(255, 255, 255, 0.1)',
+              backgroundColor: 'rgba(var(--overlay-rgb), 0.1)',
               borderRadius: '2px',
               overflow: 'hidden',
             }}
@@ -327,7 +333,7 @@ export const HorizontalModelGallery: React.FC = () => {
               style={{
                 width: '20%',
                 height: '100%',
-                backgroundColor: '#e2001a',
+                backgroundColor: 'var(--m-red)',
                 transition: 'width 0.1s linear',
               }}
             />
@@ -377,7 +383,7 @@ export const HorizontalModelGallery: React.FC = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundColor: '#050505',
+            backgroundColor: 'var(--bg-primary)',
           }}
         />
 
@@ -401,12 +407,13 @@ export const HorizontalModelGallery: React.FC = () => {
                 filter: 'brightness(0.95) contrast(1.15)',
               }}
             />
-            {/* Cinematic Gradient */}
+            {/* Cinematic Gradient — a scrim that darkens the photo for text legibility,
+                so it stays dark-based in both themes rather than fading to the page bg */}
             <div
               style={{
                 position: 'absolute',
                 inset: 0,
-                background: 'linear-gradient(180deg, rgba(5,5,5,0.2) 0%, rgba(5,5,5,0.7) 100%)',
+                background: 'linear-gradient(180deg, rgba(var(--vignette-rgb), 0.2) 0%, rgba(var(--vignette-rgb), 0.7) 100%)',
               }}
             />
 
@@ -425,7 +432,7 @@ export const HorizontalModelGallery: React.FC = () => {
                 style={{
                   fontSize: '0.9rem',
                   letterSpacing: '0.3em',
-                  color: '#e2001a',
+                  color: 'var(--m-red)',
                   marginBottom: '0.75rem',
                   textTransform: 'uppercase',
                 }}
@@ -436,7 +443,9 @@ export const HorizontalModelGallery: React.FC = () => {
                 className="font-display"
                 style={{
                   fontSize: 'clamp(3rem, 8vw, 7rem)',
-                  fontWeight: 900,
+                  fontWeight: 800,
+                  // Constant white: sits on the expanding car photo + dark scrim
+                  // above, not on the page background
                   color: '#ffffff',
                   lineHeight: 0.95,
                   letterSpacing: '-0.04em',

@@ -17,70 +17,85 @@ export const HeroSection: React.FC = () => {
 
   useGSAP(
     () => {
-      // Staggered word reveal for "BUILT FOR THE UNFORGIVING"
-      const words = headlineRef.current?.querySelectorAll('.headline-word');
-      if (words && words.length > 0) {
+      const mm = gsap.matchMedia();
+
+      // Reduced motion: show the finished state immediately. No parallax scrub
+      // (continuous scroll-linked movement is the main vestibular trigger) and
+      // no staggered/rotated word build.
+      mm.add('(prefers-reduced-motion: reduce)', () => {
+        const words = headlineRef.current?.querySelectorAll('.headline-word');
+        if (words && words.length > 0) {
+          gsap.set(words, { y: 0, opacity: 1, rotateZ: 0 });
+        }
+        gsap.set([badgeRef.current, supportingTextRef.current, ctaRef.current], { opacity: 1, y: 0 });
+      });
+
+      mm.add('(prefers-reduced-motion: no-preference)', () => {
+        // Staggered word reveal for "BUILT FOR THE UNFORGIVING"
+        const words = headlineRef.current?.querySelectorAll('.headline-word');
+        if (words && words.length > 0) {
+          gsap.fromTo(
+            words,
+            { y: 36, opacity: 0, rotateZ: 1 },
+            {
+              y: 0,
+              opacity: 1,
+              rotateZ: 0,
+              duration: 0.7,
+              stagger: 0.08,
+              ease: 'power3.out',
+              scrollTrigger: {
+                trigger: heroRef.current,
+                start: 'top 60%',
+                toggleActions: 'play none none none',
+              },
+            }
+          );
+        }
+
+        // Parallax scroll coordination: headline vs vehicle at differential speeds
+        gsap.to(carImageRef.current, {
+          y: 120,
+          scale: 1.05,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1.2,
+          },
+        });
+
+        gsap.to(headlineRef.current, {
+          y: -70,
+          opacity: 0.2,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: heroRef.current,
+            start: 'top top',
+            end: 'bottom top',
+            scrub: 1,
+          },
+        });
+
+        // Supporting elements reveal
         gsap.fromTo(
-          words,
-          { y: 60, opacity: 0, rotateZ: 2 },
+          [badgeRef.current, supportingTextRef.current, ctaRef.current],
+          { opacity: 0, y: 30 },
           {
-            y: 0,
             opacity: 1,
-            rotateZ: 0,
-            duration: 1,
-            stagger: 0.12,
-            ease: 'power3.out',
+            y: 0,
+            duration: 0.9,
+            stagger: 0.15,
+            ease: 'power2.out',
             scrollTrigger: {
               trigger: heroRef.current,
-              start: 'top 60%',
+              start: 'top 50%',
               toggleActions: 'play none none none',
             },
           }
         );
-      }
-
-      // Parallax scroll coordination: headline vs vehicle at differential speeds
-      gsap.to(carImageRef.current, {
-        y: 120,
-        scale: 1.05,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1.2,
-        },
       });
-
-      gsap.to(headlineRef.current, {
-        y: -70,
-        opacity: 0.2,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1,
-        },
-      });
-
-      // Supporting elements reveal
-      gsap.fromTo(
-        [badgeRef.current, supportingTextRef.current, ctaRef.current],
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 0.9,
-          stagger: 0.15,
-          ease: 'power2.out',
-          scrollTrigger: {
-            trigger: heroRef.current,
-            start: 'top 50%',
-            toggleActions: 'play none none none',
-          },
-        }
-      );
     },
     { scope: heroRef }
   );
@@ -100,13 +115,13 @@ export const HeroSection: React.FC = () => {
         position: 'relative',
         isolation: 'isolate',
         minHeight: '100vh',
-        backgroundColor: '#050505',
+        backgroundColor: 'var(--bg-primary)',
         overflow: 'hidden',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
         padding: 'clamp(5.5rem, 16vw, 6rem) clamp(1.25rem, 6vw, 3.5rem) clamp(2rem, 6vw, 4rem)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
+        borderBottom: '1px solid rgba(var(--overlay-rgb), 0.05)',
       }}
       aria-label="BMW M Series Hero"
     >
@@ -142,7 +157,7 @@ export const HeroSection: React.FC = () => {
           style={{
             position: 'absolute',
             inset: 0,
-            background: 'radial-gradient(ellipse at 70% 40%, rgba(255, 255, 255, 0.08) 0%, transparent 70%)',
+            background: 'radial-gradient(ellipse at 70% 40%, rgba(var(--overlay-rgb), 0.08) 0%, transparent 70%)',
             pointerEvents: 'none',
           }}
         />
@@ -153,7 +168,7 @@ export const HeroSection: React.FC = () => {
         style={{
           position: 'relative',
           zIndex: 10,
-          maxWidth: '850px',
+          maxWidth: '900px',
         }}
       >
         {/* Small Upper Label */}
@@ -176,7 +191,7 @@ export const HeroSection: React.FC = () => {
             style={{
               fontSize: '0.82rem',
               letterSpacing: '0.25em',
-              color: '#8e97a4',
+              color: 'var(--m-silver)',
               textTransform: 'uppercase',
               fontWeight: 600,
             }}
@@ -191,10 +206,10 @@ export const HeroSection: React.FC = () => {
           className="font-display hero-headline"
           style={{
             fontSize: 'clamp(3rem, 7.4vw, 6.8rem)',
-            fontWeight: 900,
+            fontWeight: 800,
             lineHeight: 0.95,
             letterSpacing: '-0.03em',
-            color: '#f5f5f7',
+            color: 'var(--text-primary)',
             marginBottom: '1.75rem',
             textTransform: 'uppercase',
           }}
@@ -214,7 +229,12 @@ export const HeroSection: React.FC = () => {
               className="headline-word"
               style={{
                 display: 'inline-block',
-                background: 'linear-gradient(90deg, #f5f5f7 0%, #e2001a 85%)',
+                // Syne 900 renders this word much wider per-character than
+                // "BUILT"/"FOR"/"THE", so at the headline's own clamp() it
+                // overflows the 850px text column and word-break chops it
+                // mid-word. Give it its own smaller clamp so it always fits.
+                fontSize: 'clamp(3rem, 7vw, 4rem)',
+                background: 'linear-gradient(90deg, var(--text-primary) 0%, var(--m-red) 85%)',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
               }}
@@ -229,7 +249,7 @@ export const HeroSection: React.FC = () => {
           ref={supportingTextRef}
           style={{
             fontSize: 'clamp(1.1rem, 2vw, 1.45rem)',
-            color: '#8e95a5',
+            color: 'var(--text-secondary)',
             fontWeight: 400,
             maxWidth: '560px',
             lineHeight: 1.5,
@@ -247,6 +267,7 @@ export const HeroSection: React.FC = () => {
             alignItems: 'center',
             gap: '1.5rem',
             flexWrap: 'wrap',
+            marginBottom: '2.5rem',
           }}
         >
           <button
@@ -263,14 +284,14 @@ export const HeroSection: React.FC = () => {
             className="font-tech"
             style={{
               fontSize: '0.8rem',
-              color: '#555b6a',
+              color: 'var(--text-muted)',
               letterSpacing: '0.12em',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
             }}
           >
-            <Flame size={14} color="#e2001a" />
+            <Flame size={14} color="var(--m-red)" />
             <span>M2 • M3 • M4 • M5 • M8</span>
           </div>
         </div>
@@ -288,23 +309,23 @@ export const HeroSection: React.FC = () => {
           justifyContent: 'space-between',
           alignItems: 'center',
           flexWrap: 'wrap',
-          borderTop: '1px solid rgba(255, 255, 255, 0.08)',
+          borderTop: '1px solid rgba(var(--overlay-rgb), 0.08)',
           paddingTop: '1.5rem',
           zIndex: 10,
         }}
       >
         <div style={{ display: 'flex', gap: '3rem', flexWrap: 'wrap', rowGap: '1.25rem' }}>
           <div>
-            <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff' }}>523 HP</div>
-            <div className="font-tech" style={{ fontSize: '0.7rem', color: '#8e95a5', letterSpacing: '0.12em' }}>M4 MAX POWER</div>
+            <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-heading)' }}>523 HP</div>
+            <div className="font-tech" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.12em' }}>M4 MAX POWER</div>
           </div>
           <div>
-            <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff' }}>3.0 SEC</div>
-            <div className="font-tech" style={{ fontSize: '0.7rem', color: '#8e95a5', letterSpacing: '0.12em' }}>0–60 MPH (M8)</div>
+            <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-heading)' }}>3.0 SEC</div>
+            <div className="font-tech" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.12em' }}>0–60 MPH (M8)</div>
           </div>
           <div>
-            <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fff' }}>738 LB-FT</div>
-            <div className="font-tech" style={{ fontSize: '0.7rem', color: '#8e95a5', letterSpacing: '0.12em' }}>M HYBRID TORQUE (M5)</div>
+            <div className="font-display" style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--text-heading)' }}>738 LB-FT</div>
+            <div className="font-tech" style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', letterSpacing: '0.12em' }}>M HYBRID TORQUE (M5)</div>
           </div>
         </div>
 
@@ -314,7 +335,7 @@ export const HeroSection: React.FC = () => {
           style={{
             fontSize: '0.75rem',
             letterSpacing: '0.2em',
-            color: '#8e95a5',
+            color: 'var(--text-secondary)',
             display: 'flex',
             alignItems: 'center',
             gap: '8px',
