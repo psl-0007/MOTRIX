@@ -563,6 +563,10 @@ img {
 .model-card-gradient {
   position: absolute;
   inset: 0;
+  /* Fades to the page background (not the dark vignette): the card's own
+     text (model name, specs) uses theme-aware colors, so it needs this
+     gradient's end color to track the theme too — dark text needs the light
+     bg here in light mode, light text needs the dark bg in dark mode. */
   background: linear-gradient(180deg, rgba(var(--bg-primary-rgb),0.2) 0%, rgba(var(--bg-primary-rgb),0.4) 40%, rgba(var(--bg-primary-rgb),0.92) 100%);
   pointer-events: none;
 }

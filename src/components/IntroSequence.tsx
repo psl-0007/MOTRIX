@@ -1,10 +1,13 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { ChevronDown } from 'lucide-react';
 
 gsap.registerPlugin(useGSAP, ScrollTrigger);
+
+const HERO_VIDEO_SRC = '/videos/m4-hero.mp4';
+const HERO_IMAGE_SRC = '/images/models/m4-hero.jpg';
 
 export const IntroSequence: React.FC = () => {
   const introContainerRef = useRef<HTMLDivElement>(null);
@@ -15,6 +18,16 @@ export const IntroSequence: React.FC = () => {
   const lightSweepRef = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
   const scrollPromptRef = useRef<HTMLDivElement>(null);
+
+  // Falls back to the static hero photo if the video can't load. Checked once
+  // on mount (matches the getInitialTheme() pattern elsewhere in this app)
+  // rather than tracked reactively — reduced-motion preference changing
+  // mid-session is not a case worth re-rendering the hero media for.
+  const [videoFailed, setVideoFailed] = useState(false);
+  const [prefersReducedMotion] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  );
+  const useVideo = !prefersReducedMotion && !videoFailed;
 
   useGSAP(
     () => {
@@ -228,23 +241,48 @@ export const IntroSequence: React.FC = () => {
         }}
       >
         <div style={{ position: 'relative', width: '100%', height: '100%', maxWidth: '1600px' }}>
-          <img
-            src="/images/models/m4-hero.jpg"
-            alt="BMW M4 Competition Emergence"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              objectPosition: 'center 45%',
-              filter: 'brightness(0.9) contrast(1.15)',
-            }}
-          />
-          {/* Subtle gradient overlays to blend seamlessly */}
+          {useVideo ? (
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+              poster={HERO_IMAGE_SRC}
+              onError={() => setVideoFailed(true)}
+              aria-label="BMW M4 Competition Emergence"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center 45%',
+                filter: 'brightness(0.9) contrast(1.15)',
+              }}
+            >
+              <source src={HERO_VIDEO_SRC} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src={HERO_IMAGE_SRC}
+              alt="BMW M4 Competition Emergence"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover',
+                objectPosition: 'center 45%',
+                filter: 'brightness(0.9) contrast(1.15)',
+              }}
+            />
+          )}
+          {/* Edge-darkening vignette so the photo reads as cinematic falloff in
+              both themes — deliberately uses the dark-biased vignette token
+              rather than the page background, which would wash the photo out
+              to a pale haze in light mode instead of a moody dark edge. */}
           <div
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'radial-gradient(ellipse at center, transparent 35%, var(--bg-primary) 95%)',
+              background: 'radial-gradient(ellipse at center, transparent 35%, rgba(var(--vignette-rgb), 0.92) 95%)',
             }}
           />
           <div

@@ -310,7 +310,11 @@ export const ModelPage: React.FC = () => {
             style={{
               position: 'absolute',
               inset: 0,
-              background: 'linear-gradient(180deg, rgba(var(--bg-primary-rgb), 0.4) 0%, rgba(var(--bg-primary-rgb), 0.2) 40%, var(--bg-primary) 100%)',
+              // Dark-biased vignette (not the page background) so the white hero
+              // title/tagline stay legible in light mode too — fading to the
+              // light page bg instead washed the photo into a pale haze and
+              // dropped the white text to near-zero contrast.
+              background: 'linear-gradient(180deg, rgba(var(--vignette-rgb), 0.35) 0%, rgba(var(--vignette-rgb), 0.15) 35%, rgba(var(--vignette-rgb), 0.95) 100%)',
             }}
           />
         </div>
@@ -666,7 +670,7 @@ export const ModelPage: React.FC = () => {
                     style={{
                       position: 'absolute',
                       inset: 0,
-                      background: 'linear-gradient(180deg, transparent 60%, rgba(var(--bg-primary-rgb), 0.7) 100%)',
+                      background: 'linear-gradient(180deg, transparent 60%, rgba(var(--vignette-rgb), 0.7) 100%)',
                     }}
                   />
                 </div>

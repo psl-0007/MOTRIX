@@ -377,13 +377,14 @@ export const HorizontalModelGallery: React.FC = () => {
         }}
         aria-hidden="true"
       >
-        {/* Darkening Veil */}
+        {/* Darkening Veil — stays dark in both themes (it's covering the whole
+            viewport during the transition, not matching a surface color) */}
         <div
           className="expansion-bg-veil"
           style={{
             position: 'absolute',
             inset: 0,
-            backgroundColor: 'var(--bg-primary)',
+            backgroundColor: 'rgb(var(--vignette-rgb))',
           }}
         />
 
