@@ -50,3 +50,20 @@ BMW M3 clips (not M4, which is what the homepage hero needs) with no verified st
 option. Per the brief's explicit fallback instruction, used a strong static image
 instead of delaying on an open-ended video search. Revisit if a verified, correctly-
 modeled, legally-clear M4 clip is found later.
+
+## Known photo vs. model-generation mismatches (added after the 2026 redesign audit)
+
+The photos themselves were intentionally left unchanged during the redesign. The on-page copy was
+rewritten so it no longer claims anything these photos contradict. If you want the imagery to match
+the specs shown for each model, these are the slots worth re-sourcing:
+
+| File | What the photo actually shows | Page copy assumes |
+|---|---|---|
+| `m3-hero.jpg` (+ `m3-front.jpg`, `m3-rear.jpg`) | Two-door coupe of the previous generation (E92) | Current M3 (G80) |
+| `m5-hero.jpg` / `m5-rear.jpg` | Previous-generation M5 (F90) | Current M5 |
+| `m8-*` | Mix of Gran Coupe and Coupe bodies | A single consistent M8 |
+| `m4-interior.jpg`, `m4-engine.jpg` | Look like the previous-generation M4 (F82) | Current M4 (G82) |
+| `m2-interior.jpg` | No seats visible, so it doesn't show the bucket-seat cockpit | "Driver-focused" cockpit |
+
+The model pages caption these honestly ("Pictured: ..."), but the lineup cards still show the current-generation
+chassis code (e.g. G80) next to the M3 photo.

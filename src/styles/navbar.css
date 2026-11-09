@@ -1,0 +1,446 @@
+/* ==========================================================================
+   NAVBAR (owner: B2). All classes are namespaced `mnav` so nothing here
+   depends on the legacy .navbar-fixed / .nav-links rules in index.css.
+   Desktop bar >= 1024px, drawer below. Every piece of content is visible by
+   default; GSAP applies the hidden "from" state from JS.
+   ========================================================================== */
+
+.mnav-root {
+  display: contents;
+}
+
+/* ---- Skip link ---------------------------------------------------------- */
+.mnav-skip {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 300;
+  padding: 0.85rem 1.25rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-tech, system-ui, sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--bg-primary);
+  background: var(--text-heading);
+  border-radius: var(--radius, 2px);
+  box-shadow: 0 0 0 2px var(--bg-primary), 0 0 0 4px var(--focus-ring, var(--m-blue));
+  transform: translateY(-200%);
+  transition: transform 0.25s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.mnav-skip:focus,
+.mnav-skip:focus-visible {
+  transform: translateY(0);
+  outline: none;
+}
+
+/* ---- Scroll progress (top edge, never hides) --------------------------- */
+.mnav-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  z-index: 120;
+  background: var(--m-red);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* ---- Bar --------------------------------------------------------------- */
+.mnav {
+  --mnav-h: 60px;
+  --mnav-mid: var(--m-dark-blue);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--mnav-h);
+  z-index: 100;
+  color: var(--text-primary);
+  box-sizing: border-box;
+}
+html.dark .mnav {
+  --mnav-mid: #1a4f7a; /* --m-dark-blue is 1.4:1 on near-black; lift it so the tri-stripe reads */
+}
+@media (min-width: 1024px) {
+  .mnav {
+    --mnav-h: 68px;
+  }
+}
+
+/* frosted surface: guarantees legibility over any hero photo in either theme */
+.mnav__bg {
+  position: absolute;
+  inset: 0;
+  background: rgba(var(--bg-primary-rgb, 5, 5, 5), 0.86);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  backdrop-filter: blur(16px) saturate(1.3);
+  transition: background-color 0.4s ease;
+  pointer-events: none;
+}
+.mnav[data-scrolled='true'] .mnav__bg {
+  background: rgba(var(--bg-primary-rgb, 5, 5, 5), 0.94);
+}
+.mnav__rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: rgba(var(--overlay-rgb, 255, 255, 255), 0.1);
+  pointer-events: none;
+}
+/* tricolour hairline; scaleX is animated from JS (resting state = fully drawn) */
+.mnav__stripe {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--m-blue) 0 38%,
+    var(--mnav-mid) 38% 62%,
+    var(--m-red) 62% 100%
+  );
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+.mnav__inner {
+  position: relative;
+  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
+  max-width: calc(var(--container, 1400px) + 2 * var(--gutter, 3.5rem));
+  margin: 0 auto;
+  padding: 0 var(--gutter, clamp(1.25rem, 6vw, 3.5rem));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+/* ---- Brand lock-up ----------------------------------------------------- */
+.mnav__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  flex: none;
+  font-family: var(--font-display, 'Syne', sans-serif);
+  font-weight: 800;
+  font-size: 1.05rem;
+  letter-spacing: 0.18em;
+  color: var(--text-heading, var(--text-primary));
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mnav__mark {
+  display: inline-flex;
+  gap: 2px;
+  height: 20px;
+  align-items: stretch;
+}
+.mnav__mark i {
+  display: block;
+  width: 4px;
+  transform: skewX(-22deg);
+  transform-origin: 50% 100%;
+  transition: transform 0.45s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.mnav__mark i:nth-child(1) { background: var(--m-blue); }
+.mnav__mark i:nth-child(2) { background: var(--mnav-mid); }
+.mnav__mark i:nth-child(3) { background: var(--m-red); }
+.mnav__brand:hover .mnav__mark i:nth-child(1) { transform: skewX(-22deg) scaleY(1.25); }
+.mnav__brand:hover .mnav__mark i:nth-child(2) { transform: skewX(-22deg) scaleY(1.25); transition-delay: 0.04s; }
+.mnav__brand:hover .mnav__mark i:nth-child(3) { transform: skewX(-22deg) scaleY(1.25); transition-delay: 0.08s; }
+.mnav__brand-m {
+  font-size: 1.45rem;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--m-red-text, var(--m-red));
+}
+
+/* ---- Desktop nav ------------------------------------------------------- */
+.mnav__nav {
+  display: none;
+}
+.mnav__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  align-items: center;
+}
+.mnav__list > li {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+@media (min-width: 1024px) {
+  .mnav__nav {
+    display: block;
+  }
+  .mnav__list {
+    gap: 0.25rem;
+  }
+}
+.mnav__sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 0.625rem;
+  background: rgba(var(--overlay-rgb, 255, 255, 255), 0.22);
+}
+
+.mnav__link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 0.75rem;
+  font-family: var(--font-tech, system-ui, sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--text-primary);
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+.mnav__link--model {
+  padding: 0 0.625rem;
+  letter-spacing: 0.1em;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+.mnav__link::after {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 9px;
+  height: 2px;
+  background: var(--m-red);
+  transform: scaleX(0);
+  transform-origin: 0 50%;
+  transition: transform 0.45s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.mnav__link--model::after {
+  left: 0.625rem;
+  right: 0.625rem;
+}
+.mnav__link:hover,
+.mnav__link[aria-current] {
+  color: var(--text-heading, var(--text-primary));
+}
+.mnav__link[aria-current='page'] {
+  font-weight: 700;
+}
+.mnav__link:hover::after,
+.mnav__link:focus-visible::after,
+.mnav__link[aria-current]::after {
+  transform: scaleX(1);
+}
+
+/* ---- Buttons (theme / menu) ------------------------------------------- */
+.mnav .mnav__theme,
+.mnav-drawer .mnav__theme,
+.mnav__burger {
+  display: inline-grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  font-size: 1.375rem;
+  color: var(--text-primary);
+  background: transparent;
+  border: 0;
+  border-radius: var(--radius, 2px);
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+.mnav__theme:hover,
+.mnav__burger:hover {
+  background: rgba(var(--overlay-rgb, 255, 255, 255), 0.08);
+  color: var(--text-heading, var(--text-primary));
+}
+.mnav__theme svg {
+  display: block;
+  overflow: hidden;
+}
+
+.mnav__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+@media (min-width: 1024px) {
+  .mnav__actions {
+    display: none;
+  }
+}
+
+/* focus: inset ring so it is never clipped by the bar, >= 3:1 on the frosted surface */
+.mnav a:focus-visible,
+.mnav button:focus-visible,
+.mnav-drawer a:focus-visible,
+.mnav-drawer button:focus-visible {
+  outline: 2px solid var(--focus-ring, var(--text-heading));
+  outline-offset: -3px;
+  border-radius: var(--radius, 2px);
+}
+.mnav-drawer__panel:focus {
+  outline: none;
+}
+
+/* ---- Mobile drawer ----------------------------------------------------- */
+.mnav-drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  background: rgb(var(--bg-primary-rgb, 5, 5, 5));
+  color: var(--text-primary);
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+@media (min-width: 1024px) {
+  .mnav-drawer {
+    display: none;
+  }
+}
+.mnav-drawer__top {
+  flex: none;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--gutter, 1.25rem);
+  border-bottom: 1px solid rgba(var(--overlay-rgb, 255, 255, 255), 0.1);
+}
+.mnav-drawer__title {
+  font-family: var(--font-tech, system-ui, sans-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.mnav-drawer__body {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1.25rem;
+  padding: 1.5rem var(--gutter, 1.25rem);
+}
+.mnav-drawer__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.mnav-drawer__row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-height: 52px;
+  text-decoration: none;
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(var(--overlay-rgb, 255, 255, 255), 0.1);
+}
+.mnav-drawer__row--main {
+  min-height: 64px;
+  font-family: var(--font-display, 'Syne', sans-serif);
+  font-weight: 800;
+  font-size: clamp(1.75rem, 8vw, 2.5rem);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--text-heading, var(--text-primary));
+}
+.mnav-drawer__idx {
+  flex: none;
+  width: 2.25rem;
+  font-family: var(--font-tech, system-ui, sans-serif);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--m-red-text, var(--m-red));
+}
+.mnav-drawer__name {
+  font-family: var(--font-display, 'Syne', sans-serif);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  flex: none;
+}
+.mnav-drawer__desc {
+  flex: 1 1 0;
+  min-width: 0;
+  margin-left: auto;
+  font-family: var(--font-tech, system-ui, sans-serif);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  text-align: right;
+}
+@media (max-width: 359px) {
+  .mnav-drawer__desc {
+    display: none;
+  }
+}
+.mnav-drawer__row[aria-current]::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--gutter, 1.25rem) + 0.5rem);
+  top: 50%;
+  width: 4px;
+  height: 22px;
+  margin-top: -11px;
+  background: var(--m-red);
+}
+.mnav-drawer__foot {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem var(--gutter, 1.25rem);
+  border-top: 1px solid rgba(var(--overlay-rgb, 255, 255, 255), 0.1);
+}
+.mnav-drawer__stripe {
+  flex: none;
+  height: 3px;
+  background: linear-gradient(90deg, var(--m-blue) 0 38%, var(--mnav-mid, var(--m-dark-blue)) 38% 62%, var(--m-red) 62% 100%);
+}
+html.dark .mnav-drawer {
+  --mnav-mid: #1a4f7a;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mnav__bg,
+  .mnav__link,
+  .mnav__link::after,
+  .mnav__mark i,
+  .mnav-skip {
+    transition: none;
+  }
+}

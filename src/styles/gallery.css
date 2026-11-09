@@ -1,0 +1,626 @@
+/* ==========================================================================
+   LINEUP GALLERY  ("01 — THE LINEUP")
+   Two layouts, switched by JS (HorizontalModelGallery sets data-mode):
+     (no attribute) / native : plain scroll-snap track. This is also the no-JS,
+                               mobile and prefers-reduced-motion layout.
+     pin                     : the whole section is pinned to 100svh and a GSAP
+                               containerAnimation drives the track.
+   Nothing here hides content: the only "from" states live in JS.
+   ========================================================================== */
+
+.lineup {
+  --lineup-nav: var(--nav-h, 72px);
+  --lineup-gutter: var(--gutter, clamp(1.25rem, 6vw, 3.5rem));
+  --lineup-gap: clamp(1rem, 3vw, 2.5rem);
+  --lineup-ring: var(--focus-ring, var(--text-heading, #fff));
+  --lineup-halo: var(--focus-ring-halo, var(--bg-primary, #050505));
+  position: relative;
+  isolation: isolate;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  border-top: 1px solid var(--border-subtle, rgba(var(--overlay-rgb), 0.08));
+  padding-block: var(--section-pad-y, clamp(4rem, 10vw, 8rem));
+}
+
+.lineup .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- header ---------- */
+
+.lineup__head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1.25rem 2rem;
+  padding-inline: var(--lineup-gutter);
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  max-width: var(--container, 1400px);
+  margin-inline: auto;
+}
+
+.lineup__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 0.6rem;
+  font-family: var(--font-tech);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--m-red-text, var(--m-red));
+}
+
+.lineup__h2 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.25rem, 9vw, 4.5rem);
+  line-height: 0.98;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--text-heading);
+  hyphens: manual;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.lineup__now {
+  display: none; /* pin mode only */
+}
+
+.lineup__controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-self: end;
+}
+
+.lineup__count {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.5em;
+  font-family: var(--font-tech);
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-heading);
+  white-space: nowrap;
+}
+.lineup__count-cur-wrap {
+  display: inline-block;
+  overflow: clip;
+  line-height: 1.2;
+}
+.lineup__count-cur {
+  display: inline-block;
+}
+.lineup__count-sep,
+.lineup__count-total {
+  color: var(--text-secondary);
+}
+
+.lineup__btns {
+  display: flex;
+  gap: 8px;
+}
+
+.lineup__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--border-light, rgba(var(--overlay-rgb), 0.2));
+  border-radius: var(--radius, 2px);
+  background: transparent;
+  color: var(--text-heading);
+  cursor: pointer;
+  transition: background-color 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+.lineup__btn:hover {
+  background: var(--m-red);
+  border-color: var(--m-red);
+  color: #fff;
+}
+.lineup__btn[aria-disabled='true'] {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+.lineup__btn:focus-visible,
+.lineup-card__link:focus-visible {
+  outline: 3px solid var(--lineup-ring);
+  outline-offset: 4px;
+  box-shadow: 0 0 0 2px var(--lineup-halo);
+}
+
+.lineup__bar {
+  grid-column: 1 / -1;
+  height: 2px;
+  background: var(--border-light, rgba(var(--overlay-rgb), 0.16));
+  overflow: clip;
+}
+.lineup__bar-fill {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: var(--m-red);
+  transform: scaleX(0.2);
+  transform-origin: 0 50%;
+}
+
+/* ---------- track: NATIVE layout (default, mobile, reduced motion) ---------- */
+
+.lineup__viewport {
+  position: relative;
+}
+
+.lineup__track {
+  position: relative;
+  display: flex;
+  gap: var(--lineup-gap);
+  list-style: none;
+  margin: 0;
+  padding: 18px var(--lineup-gutter);
+  overflow-x: auto;
+  overflow-y: clip;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--lineup-gutter);
+  scrollbar-width: thin;
+  scrollbar-color: var(--m-red) transparent;
+}
+
+.lineup-card {
+  position: relative;
+  flex: 0 0 min(86vw, 520px);
+  aspect-ratio: 3 / 4.3;
+  scroll-snap-align: start;
+  container: lineup-card / size;
+  transform-origin: 50% 50%;
+}
+
+@media (min-width: 769px) {
+  .lineup__h2 {
+    font-size: clamp(2.5rem, 4.2vw, 4rem);
+  }
+  .lineup-card {
+    flex-basis: min(78vw, 920px);
+    aspect-ratio: 16 / 10;
+  }
+}
+
+/* ---------- track: PIN layout ---------- */
+
+.lineup[data-mode='pin'] {
+  height: 100svh;
+  padding-block: calc(var(--lineup-nav) + clamp(0.5rem, 2vh, 1.25rem)) clamp(0.75rem, 2vh, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  overflow: clip; /* clip, not hidden: focus can never scroll this box sideways */
+  border-top: 0;
+}
+
+.lineup[data-mode='pin'] .lineup__head {
+  width: 100%;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  margin-bottom: clamp(0.5rem, 1.6vh, 1rem);
+  gap: 0.5rem 2rem;
+  flex: none;
+}
+.lineup[data-mode='pin'] .lineup__eyebrow {
+  margin-bottom: 0.35rem;
+}
+.lineup[data-mode='pin'] .lineup__h2 {
+  font-size: clamp(1.5rem, min(2.4vw, 4.4vh), 2.5rem);
+  white-space: nowrap;
+}
+.lineup[data-mode='pin'] .lineup__bar {
+  margin-top: 0.25rem;
+}
+
+.lineup[data-mode='pin'] .lineup__now {
+  display: grid;
+  justify-items: start;
+  text-align: left;
+  padding-left: clamp(1.5rem, 4vw, 4rem);
+  padding-bottom: 0.1rem;
+}
+@media (max-width: 1099px) {
+  .lineup[data-mode='pin'] .lineup__now {
+    display: none;
+  }
+  .lineup[data-mode='pin'] .lineup__head {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+}
+.lineup__now-item {
+  grid-area: 1 / 1;
+  display: grid;
+  gap: 0.2rem;
+}
+.lineup__now-name {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.25rem, min(2.2vw, 3.6vh), 2rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-heading);
+  white-space: nowrap;
+}
+.lineup__now-desc {
+  font-family: var(--font-tech);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.lineup[data-mode='pin'] .lineup__viewport {
+  flex: 1 1 0;
+  min-height: 0;
+  container: lineup-viewport / size;
+  overflow: clip;
+}
+
+.lineup[data-mode='pin'] .lineup__track {
+  --card-h: calc(100cqh - 28px);
+  --card-w: min(76cqw, calc(var(--card-h) * 1.6));
+  height: 100%;
+  width: max-content;
+  align-items: center;
+  overflow: visible; /* moved with transform by GSAP, never scrolled */
+  scroll-snap-type: none;
+  padding: 0 calc((100cqw - var(--card-w)) / 2);
+  will-change: transform;
+}
+
+.lineup[data-mode='pin'] .lineup-card {
+  flex: 0 0 var(--card-w);
+  width: var(--card-w);
+  height: var(--card-h);
+  aspect-ratio: auto;
+  scroll-snap-align: none;
+}
+
+/* ---------- card ---------- */
+
+.lineup-card__ticks {
+  position: absolute;
+  inset: -9px;
+  pointer-events: none;
+  --t: rgba(var(--overlay-rgb), 0.5);
+  background:
+    linear-gradient(var(--t), var(--t)) 0 0 / 14px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) 0 0 / 1px 14px no-repeat,
+    linear-gradient(var(--t), var(--t)) 100% 0 / 14px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) 100% 0 / 1px 14px no-repeat,
+    linear-gradient(var(--t), var(--t)) 0 100% / 14px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) 0 100% / 1px 14px no-repeat,
+    linear-gradient(var(--t), var(--t)) 100% 100% / 14px 1px no-repeat,
+    linear-gradient(var(--t), var(--t)) 100% 100% / 1px 14px no-repeat;
+}
+
+.lineup-card__frame {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+  background: #0b0d11;
+  color: var(--on-photo-text, #fff);
+  /* cut top-right corner: the "frame" */
+  clip-path: polygon(0 0, calc(100% - 34px) 0, 100% 34px, 100% 100%, 0 100%);
+}
+
+.lineup-card__media {
+  position: absolute;
+  inset: 0;
+  overflow: clip;
+}
+.lineup-card__img {
+  position: absolute;
+  top: 0;
+  left: -8%;
+  width: 116%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: var(--pos, 50% 60%);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.lineup-card__dim {
+  position: absolute;
+  inset: 0;
+  background: #050505;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Legibility scrims: text never sits straight on the photograph. */
+.lineup-card__scrim {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to bottom, rgba(5, 5, 5, 0.72) 0%, rgba(5, 5, 5, 0) 26%),
+    linear-gradient(to top, rgba(5, 5, 5, 0.94) 0%, rgba(5, 5, 5, 0.86) 34%, rgba(5, 5, 5, 0.42) 62%, rgba(5, 5, 5, 0) 82%);
+}
+
+.lineup-card__ghost {
+  position: absolute;
+  right: 4cqw;
+  top: 6cqh;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(6rem, 52cqh, 22rem);
+  line-height: 0.8;
+  letter-spacing: -0.06em;
+  color: rgba(255, 255, 255, 0.06);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.lineup-card__top {
+  position: absolute;
+  top: clamp(1rem, 4cqh, 1.75rem);
+  left: clamp(1rem, 3.4cqw, 2rem);
+  right: calc(clamp(1rem, 3.4cqw, 2rem) + 24px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-family: var(--font-tech);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  color: var(--on-photo-text, #fff);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.lineup-card__body {
+  position: absolute;
+  left: clamp(1rem, 3.4cqw, 2rem);
+  right: clamp(1rem, 3.4cqw, 2rem);
+  bottom: clamp(1rem, 4.5cqh, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.75rem, 3cqh, 1.25rem);
+}
+
+.lineup-card__main {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-width: 0;
+}
+
+.lineup-card__desc {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.35rem;
+  font-family: var(--font-tech);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--on-photo-muted, #e6e9ee);
+}
+.lineup-card__desc::before {
+  content: '';
+  flex: none;
+  width: 22px;
+  height: 2px;
+  background: var(--m-red);
+}
+
+.lineup-card__title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.15rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.9;
+  color: var(--on-photo-text, #fff);
+  white-space: nowrap; /* model codes never break (G87, M3...) */
+}
+.lineup-card__brand {
+  font-size: clamp(0.8125rem, 3.6cqh, 1.15rem);
+  letter-spacing: 0.3em;
+  line-height: 1;
+  color: var(--on-photo-muted, #e6e9ee);
+}
+.lineup-card__code {
+  font-size: clamp(3.25rem, min(21cqh, 14cqw), 8.5rem);
+  letter-spacing: -0.05em;
+}
+
+.lineup-card__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  margin-top: clamp(0.5rem, 2cqh, 1rem);
+  padding: 0 6px 0 16px;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--radius, 2px);
+  background: rgba(5, 5, 5, 0.55);
+  color: var(--on-photo-text, #fff);
+  font-family: var(--font-tech);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  pointer-events: none; /* the stretched link underneath takes the click */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+.lineup-card__cta-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: var(--m-red);
+  color: #fff;
+  transition: transform 0.3s var(--ease-out-expo, cubic-bezier(0.16, 1, 0.3, 1));
+}
+.lineup-card:hover .lineup-card__cta,
+.lineup-card:has(.lineup-card__link:focus-visible) .lineup-card__cta {
+  background: rgba(5, 5, 5, 0.85);
+  border-color: #fff;
+}
+.lineup-card:hover .lineup-card__cta-arrow,
+.lineup-card:has(.lineup-card__link:focus-visible) .lineup-card__cta-arrow {
+  transform: translateX(3px);
+}
+
+.lineup-card__stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, auto));
+  justify-content: start;
+  gap: 0;
+  margin: 0;
+  padding-top: clamp(0.6rem, 2.4cqh, 1rem);
+  border-top: 1px solid rgba(255, 255, 255, 0.28);
+}
+.lineup-card__stat {
+  padding-inline: clamp(0.75rem, 2.2cqw, 1.5rem);
+  border-left: 1px solid rgba(255, 255, 255, 0.22);
+  min-width: 0;
+}
+.lineup-card__stat:first-child {
+  padding-left: 0;
+  border-left: 0;
+}
+.lineup-card__stat dt {
+  font-family: var(--font-tech);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--on-photo-muted, #e6e9ee);
+  white-space: nowrap;
+}
+.lineup-card__stat dd {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1rem, 3.6cqh, 1.6rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--on-photo-text, #fff);
+  white-space: nowrap;
+}
+
+/* wide cards: name block left, 2x2 stats right on the same baseline */
+@container lineup-card (min-width: 700px) {
+  .lineup-card__body {
+    flex-direction: row;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+  .lineup-card__main {
+    flex: 1 1 auto;
+  }
+  .lineup-card__desc {
+    white-space: nowrap;
+  }
+}
+
+/* 2x2 stats in wide and narrow cards; 4-across only in the mid range */
+@container lineup-card (max-width: 520px) {
+  .lineup-card__stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 0.65rem;
+  }
+  .lineup-card__stat:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .lineup-card__stat:nth-child(even) {
+    padding-left: 1rem;
+  }
+}
+@container lineup-card (min-width: 700px) {
+  .lineup-card__stats {
+    flex: none;
+    grid-template-columns: repeat(2, auto);
+    row-gap: clamp(0.5rem, 2.4cqh, 1rem);
+    border-top: 0;
+    padding-top: 0;
+    padding-bottom: 0.3rem;
+  }
+  .lineup-card__stat:nth-child(odd) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .lineup-card__stat:nth-child(even) {
+    padding-left: clamp(0.75rem, 2.2cqw, 1.5rem);
+  }
+  .lineup-card__stat dd {
+    font-size: clamp(1.1rem, 4.4cqh, 1.9rem);
+  }
+}
+
+/* short cards (small laptop heights): drop the ghost size and the stats rule */
+@container lineup-card (max-height: 470px) and (min-width: 700px) {
+  .lineup-card__ghost {
+    font-size: 40cqh;
+  }
+}
+
+/* the stretched, real <a>: whole card is the hit target; Cmd/Ctrl-click works */
+.lineup-card__link {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: block;
+  border-radius: 1px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lineup *,
+  .lineup *::before,
+  .lineup *::after {
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .lineup__count {
+    font-size: 1rem;
+  }
+}
+
+/* native layout, small screens: title row, then counter + buttons row */
+@media (max-width: 768px) {
+  .lineup:not([data-mode='pin']) .lineup__head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .lineup:not([data-mode='pin']) .lineup__controls {
+    justify-self: stretch;
+    justify-content: space-between;
+  }
+}

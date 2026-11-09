@@ -1,0 +1,230 @@
+/* ── Hero: full-bleed video/photo, left-aligned display headline, telemetry row ── */
+.hero {
+  position: relative;
+  z-index: 2;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  overflow: hidden;
+  background: #050505; /* the media is dark in both themes */
+  color: var(--on-photo-text, #fff);
+  padding: calc(var(--nav-h, 72px) + 1.5rem) 0 clamp(1.25rem, 3.5vh, 2.5rem);
+}
+
+/* media layer (video, or the poster still) */
+.hero__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  will-change: auto;
+}
+.hero__video,
+.hero__poster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 66% 50%;
+}
+@media (min-width: 769px) and (prefers-reduced-motion: no-preference) {
+  /* 20% taller than the hero: room for +/-7% parallax travel without exposing an edge */
+  .hero__media { inset: -10% 0; }
+}
+
+/* legibility scrims: left for the headline column, bottom for the telemetry row */
+.hero__scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    linear-gradient(rgba(var(--scrim-strong, 3, 4, 7), 0.44), rgba(var(--scrim-strong, 3, 4, 7), 0.44)),
+    linear-gradient(90deg, rgba(var(--scrim-strong, 3, 4, 7), 0.86) 0%, rgba(var(--scrim-strong, 3, 4, 7), 0.6) 38%, rgba(var(--scrim-strong, 3, 4, 7), 0.3) 78%, rgba(var(--scrim-strong, 3, 4, 7), 0.2) 100%),
+    linear-gradient(0deg, rgba(var(--scrim-strong, 3, 4, 7), 0.9) 0%, rgba(var(--scrim-strong, 3, 4, 7), 0.45) 28%, rgba(var(--scrim-strong, 3, 4, 7), 0) 55%),
+    linear-gradient(180deg, rgba(var(--scrim-soft, 8, 10, 14), 0.5) 0%, rgba(var(--scrim-soft, 8, 10, 14), 0) 22%);
+}
+/* The poster still is already dark: use a lighter flat layer so the car stays visible. */
+.hero--still .hero__scrim {
+  background:
+    linear-gradient(rgba(var(--scrim-strong, 3, 4, 7), 0.12), rgba(var(--scrim-strong, 3, 4, 7), 0.12)),
+    linear-gradient(90deg, rgba(var(--scrim-strong, 3, 4, 7), 0.8) 0%, rgba(var(--scrim-strong, 3, 4, 7), 0.45) 40%, rgba(var(--scrim-strong, 3, 4, 7), 0) 80%),
+    linear-gradient(0deg, rgba(var(--scrim-strong, 3, 4, 7), 0.85) 0%, rgba(var(--scrim-strong, 3, 4, 7), 0.35) 28%, rgba(var(--scrim-strong, 3, 4, 7), 0) 55%),
+    linear-gradient(180deg, rgba(var(--scrim-soft, 8, 10, 14), 0.5) 0%, rgba(var(--scrim-soft, 8, 10, 14), 0) 22%);
+}
+@media (max-width: 768px) {
+  .hero__video,
+  .hero__poster { object-position: 62% 50%; }
+  .hero__scrim,
+  .hero--still .hero__scrim {
+    background:
+      linear-gradient(0deg, rgba(var(--scrim-strong, 3, 4, 7), 0.94) 0%, rgba(var(--scrim-strong, 3, 4, 7), 0.8) 45%, rgba(var(--scrim-strong, 3, 4, 7), 0.25) 75%, rgba(var(--scrim-strong, 3, 4, 7), 0.1) 100%),
+      linear-gradient(180deg, rgba(var(--scrim-soft, 8, 10, 14), 0.5) 0%, rgba(var(--scrim-soft, 8, 10, 14), 0) 20%);
+  }
+}
+
+.hero__inner {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: var(--container, 1400px);
+  margin-inline: auto;
+  padding-inline: var(--gutter, clamp(1.25rem, 6vw, 3.5rem));
+}
+
+.hero__eyebrow .m-badge-stripes { flex: none; }
+.hero__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  margin: 0 0 clamp(0.9rem, 2.2vh, 1.5rem);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--on-photo-muted, #e6e9ee);
+}
+
+/* Syne 800 is very wide: both lines ("BUILT FOR THE" / "UNFORGIVING.") measure ~12.15em, so the size
+   is derived from the container's content width and the lines can never overflow or break mid-word. */
+.hero__title {
+  margin: 0 0 clamp(1rem, 2.6vh, 1.75rem);
+  font-size: calc((min(100vw, var(--container, 1400px)) - 2 * var(--gutter, 1.25rem)) / 12.4);
+  font-weight: 800;
+  line-height: 0.93;
+  letter-spacing: -0.035em;
+  text-transform: uppercase;
+  color: var(--on-photo-text, #fff);
+  hyphens: manual;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+.hero__title > span { display: block; white-space: nowrap; }
+.hero__title:focus { outline: none; }
+
+.hero__lede {
+  margin: 0 0 clamp(1.25rem, 3vh, 2rem);
+  max-width: 46ch;
+  font-size: clamp(1rem, 1.3vw, 1.2rem);
+  line-height: 1.6;
+  color: var(--on-photo-muted, #e6e9ee);
+}
+
+.hero__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+
+/* Primary CTA: constant light button on the dark photo in both themes */
+.hero__cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0 1.75rem;
+  background: #ffffff;
+  color: #0a0a0a;
+  border-radius: 2px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-decoration: none;
+  transition: background-color 0.25s ease, color 0.25s ease;
+}
+.hero__cta:hover { background: var(--m-red, #e2001a); color: #ffffff; transform: none; }
+.hero :focus-visible { outline: 2px solid #ffffff; outline-offset: 3px; }
+.hero__cta svg { flex: none; }
+
+/* bottom bar: hairline rule + scroll cue (left) + telemetry (right) */
+.hero__bar {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-top: clamp(1.5rem, 4.5vh, 3rem);
+  padding-top: clamp(0.9rem, 2vh, 1.4rem);
+}
+.hero__rule {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.28);
+  transform-origin: 0 50%;
+}
+
+.hero__cue {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--on-photo-muted, #e6e9ee);
+}
+.hero__cue-track {
+  position: relative;
+  display: block;
+  width: 3.5rem;
+  height: 1px;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.3);
+}
+.hero__cue-bar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 40%;
+  background: var(--m-red, #e2001a);
+}
+
+.hero__telemetry {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: clamp(1.25rem, 4vw, 3.5rem);
+  margin: 0;
+}
+.hero__stat {
+  display: flex;
+  flex-direction: column-reverse; /* DOM: label first (dt), value second (dd); visual: value above label */
+  gap: 0.35rem;
+  padding-left: 0.9rem;
+  border-left: 1px solid rgba(255, 255, 255, 0.28);
+}
+.hero__stat dt {
+  font-size: 0.75rem;
+  line-height: 1.45;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-photo-muted, #e6e9ee);
+}
+.hero__stat dt small { display: block; font-size: inherit; color: inherit; opacity: 1; letter-spacing: 0.12em; }
+.hero__stat dd { margin: 0; display: flex; align-items: baseline; gap: 0.4em; white-space: nowrap; }
+.hero__num {
+  font-size: clamp(1.4rem, 2.4vw, 2.1rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  color: var(--on-photo-text, #fff);
+}
+.hero__unit {
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: var(--on-photo-muted, #e6e9ee);
+}
+
+@media (max-width: 768px) {
+  .hero__cue { display: none; }
+  .hero__bar { display: block; }
+  .hero__telemetry { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
+  .hero__stat { padding-left: 0.65rem; min-width: 0; }
+  .hero__num { font-size: clamp(1.05rem, 5.2vw, 1.4rem); }
+  .hero__stat dd { flex-wrap: wrap; column-gap: 0.35em; row-gap: 0.1rem; white-space: normal; }
+  .hero__stat dt { letter-spacing: 0.08em; }
+  .hero__eyebrow { letter-spacing: 0.16em; font-size: 0.75rem; }
+  .hero__cta { width: 100%; }
+}
+@media (max-height: 640px) and (min-width: 769px) {
+  .hero__lede { display: none; }
+}

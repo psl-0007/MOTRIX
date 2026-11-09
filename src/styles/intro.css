@@ -1,0 +1,123 @@
+/* ── Intro: wordmark title card (pinned on desktop; the hero slides over it) ── */
+.intro {
+  position: relative;
+  z-index: 1;
+  height: 100vh;
+  height: 100svh;
+  min-height: 28rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--nav-h, 72px) var(--gutter, 1.25rem) 5.5rem;
+  background-color: var(--bg-primary);
+  color: var(--text-heading);
+}
+
+/* faint technical hairlines: a horizon line and two vertical ticks */
+.intro__hud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(to right, transparent, rgba(var(--overlay-rgb), 0.07) 20%, rgba(var(--overlay-rgb), 0.07) 80%, transparent) center / 100% 1px no-repeat;
+}
+
+.intro__stage {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  transform-origin: 50% 50%;
+}
+
+/* "BMW" is ~4.54em wide in Syne 800. 19vw -> ~86vw of glyphs, capped so it never clips. */
+.intro__mark {
+  margin: 0;
+  font-size: clamp(3rem, 19vw, 22rem);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--text-heading);
+  white-space: nowrap;
+  text-align: center;
+  user-select: none;
+}
+
+/* the M tricolour, drawn in under the wordmark */
+.intro__stripes {
+  display: flex;
+  height: clamp(5px, 1.1vw, 14px);
+  margin-top: clamp(0.5rem, 1.8vw, 1.5rem);
+  transform: skewX(-24deg);
+  overflow: hidden;
+}
+.intro__stripes > span { flex: 1; display: block; transform-origin: 0 50%; }
+.intro__stripes > span:nth-child(1) { background: var(--m-blue); }
+.intro__stripes > span:nth-child(2) { background: var(--m-dark-blue); }
+.intro__stripes > span:nth-child(3) { background: var(--m-red); }
+
+.intro__sub {
+  margin: clamp(1.25rem, 3.5vh, 2.25rem) 0 0;
+  max-width: min(46rem, 90vw);
+  text-align: center;
+  text-wrap: balance;
+  font-size: clamp(0.75rem, 1.5vw, 1rem);
+  line-height: 1.7;
+  letter-spacing: clamp(0.12em, 0.5vw, 0.3em);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+/* scroll cue: a real link (keyboard / skip affordance) with an animated line */
+.intro__cue {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin-inline: auto;
+  width: max-content;
+  bottom: clamp(1rem, 3vh, 2rem);
+  z-index: 2;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.5rem 1rem;
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-size: 0.75rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  transition: color 0.2s ease;
+}
+.intro__cue:hover { color: var(--text-heading); }
+.intro__cue:focus-visible {
+  outline: 2px solid var(--focus-ring, var(--m-blue));
+  outline-offset: 2px;
+}
+.intro__cue-track {
+  position: relative;
+  display: block;
+  width: 1px;
+  height: 2.75rem;
+  overflow: hidden;
+  background: rgba(var(--overlay-rgb), 0.18);
+}
+.intro__cue-bar {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 45%;
+  background: var(--m-red);
+}
+
+@media (max-width: 768px) {
+  .intro { padding-bottom: 6rem; }
+  .intro__hud { display: none; }
+}
+@media (max-height: 520px) {
+  .intro__cue-track { display: none; }
+  .intro__cue { bottom: 0.5rem; }
+}

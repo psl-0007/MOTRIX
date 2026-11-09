@@ -1,5 +1,7 @@
 /* ==========================================================================
-   BMW M SERIES — CINEMATIC DESIGN SYSTEM (VANILLA CSS + TAILWIND FOR SHADCN)
+   BMW M SERIES — "MOTORSPORT TELEMETRY MEETS CINEMATIC EDITORIAL"
+   Design system: tokens (below) -> base -> shared utilities -> components.
+   See the "SHARED UTILITIES" block further down for the reusable classes.
    ========================================================================== */
 
 @import "tailwindcss";
@@ -31,18 +33,32 @@
      effect, not a surface color) but lighter/subtler here so it doesn't look
      like a heavy grey frame on an already-light page. */
   --vignette-rgb: 20, 18, 15;
-  --vignette-opacity: 0.35;
+  --vignette-opacity: 0;
 
-  --border-subtle: rgba(0, 0, 0, 0.08);
-  --border-light: rgba(0, 0, 0, 0.14);
+  --border-subtle: rgba(0, 0, 0, 0.12);
+  --border-light: rgba(0, 0, 0, 0.3);
+  --border-strong: rgba(0, 0, 0, 0.5);        /* control boundaries: 3.9:1 on --bg-primary */
   --border-active: rgba(226, 0, 26, 0.8);
   --overlay-rgb: 0, 0, 0;
 
   --text-primary: #23252b;
   --text-heading: #0a0a0a;
-  --text-secondary: #5c6270;
-  --text-muted: #8b909b;
+  --text-secondary: #464b58;
+  --text-muted: #626876;
   --text-dim: #c3c6cc;
+
+  /* --- Phase-2 tokens (light) — every *text* token measured >=4.5:1 on
+     --bg-primary, --bg-surface and --bg-footer --- */
+  --m-red-text: #c4001a;      /* 5.68 / 6.25 / 5.19 */
+  --m-blue-text: #0066b1;     /* 5.40 / 5.94 / 4.94 */
+  --focus-ring: #0066b1;      /* 5.40 / 5.94 : 1 (needs >=3) */
+  --focus-ring-halo: #ffffff; /* second tone so rings read on dark photos */
+  --on-photo-text: #ffffff;
+  --on-photo-muted: #e6e9ee;
+  --scrim-strong: 3, 4, 7;    /* rgb channels: rgba(var(--scrim-strong), .85) */
+  --scrim-soft: 8, 10, 14;
+  --nav-h: 72px;
+  color-scheme: light;
 
   --m-blue: #0066b1;
   --m-dark-blue: #002b49;
@@ -52,7 +68,25 @@
 
   --font-display: 'Syne', sans-serif;
   --font-body: 'Outfit', sans-serif;
-  --font-tech: 'Space Grotesk', monospace;
+  --font-tech: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+
+  /* Type scale (fluid; nothing below 12px). Syne 800 is extended: section/
+     display sizes are tuned so the longest words ("UNCOMPROMISING.",
+     "UNFORGIVING.") fit a 390px viewport without breaking. */
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.875rem;
+  --fs-base: 1rem;
+  --fs-md: 1.125rem;
+  --fs-lg: 1.375rem;
+  --fs-h3: clamp(1.25rem, 1.05rem + 0.8vw, 1.75rem);
+  /* Measured Syne 800 uppercase widths (em): UNFORGIVING. 12.3 · SPECIFICATIONS
+     13.8 · PERFORMANCE. 13.7 · UNCOMPROMISING. 16.65. Container = 100vw - 2*gutter.
+       --fs-section  fits words <= ~13.8em at 390/768/1024/1440
+       --fs-section-long fits UNCOMPROMISING.-class words (<= 16.7em)
+       --fs-display  fits words <= ~12.3em (UNFORGIVING.) */
+  --fs-section: clamp(1.4rem, 6.2vw, 4.5rem);
+  --fs-section-long: clamp(1.2rem, 5.1vw, 4.5rem);
+  --fs-display: clamp(1.5rem, 7vw, 7rem);
 
   --ease-out-quad: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-in-out-smooth: cubic-bezier(0.77, 0, 0.175, 1);
@@ -79,7 +113,11 @@
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 2px;
+  --gutter: clamp(1.25rem, 6vw, 3.5rem);
+  --section-pad-y: clamp(4rem, 10vw, 8rem);
+  --container: 1400px;
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: oklch(0.205 0 0);
@@ -100,16 +138,28 @@
   --vignette-rgb: 5, 5, 5;
   --vignette-opacity: 0.7;
 
-  --border-subtle: rgba(255, 255, 255, 0.08);
-  --border-light: rgba(255, 255, 255, 0.16);
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-light: rgba(255, 255, 255, 0.28);
+  --border-strong: rgba(255, 255, 255, 0.4);  /* control boundaries: 3.6:1 on --bg-primary */
   --border-active: rgba(226, 0, 26, 0.8);
   --overlay-rgb: 255, 255, 255;
 
   --text-primary: #f5f5f7;
   --text-heading: #ffffff;
-  --text-secondary: #8e95a5;
-  --text-muted: #555b6a;
+  --text-secondary: #a3aab8;
+  --text-muted: #8a90a0;
   --text-dim: #323640;
+
+  /* --- Phase-2 tokens (dark) — text tokens >=4.5:1 on every dark surface --- */
+  --m-red-text: #ff4d5e;      /* 6.28 / 6.03 / 6.36 */
+  --m-blue-text: #4da3e0;     /* 7.41 / 7.11 / 7.49 */
+  --focus-ring: #ffffff;      /* 20.4 / 19.6 : 1 */
+  --focus-ring-halo: #050505;
+  --on-photo-text: #ffffff;
+  --on-photo-muted: #e6e9ee;
+  --scrim-strong: 3, 4, 7;
+  --scrim-soft: 8, 10, 14;
+  color-scheme: dark;
 
   --m-blue: #0066b1;
   --m-dark-blue: #002b49;
@@ -135,68 +185,398 @@
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
-/* Reset & Foundation */
-*, *::before, *::after {
-  box-sizing: border-box;
-  margin: 0;
+/* ==========================================================================
+   BASE — element defaults live in @layer base so Tailwind utilities (p-*, m-*,
+   gap-*, bg-*) can override them. The old unlayered `* {margin:0;padding:0}`
+   reset is GONE (Tailwind preflight already zeroes margin/padding/borders).
+   ========================================================================== */
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    /* `clip` (not `hidden`) so html/body don't both become scroll containers
+       (A3-22). Falls back to `hidden` where clip is unsupported. */
+    overflow-x: hidden;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    /* Fixed navbar: anchors / scrollIntoView / :target land below it. */
+    scroll-padding-top: calc(var(--nav-h) + 16px);
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    min-height: 100dvh;
+    font-size: 1rem;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-synthesis-weight: none;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+  }
+
+  button:disabled,
+  [aria-disabled='true'] {
+    cursor: not-allowed;
+  }
+
+  img,
+  video {
+    max-width: 100%;
+    display: block;
+  }
+
+  /* Headings never break inside a word under normal conditions (A1/A2:
+     UNCOMPRO/MISING came from `word-break: break-word` on everything). A word
+     that is too wide must be fixed with a fluid font-size. `overflow-wrap:
+     anywhere` is only the LAST-RESORT safety net (a word wider than its box
+     would otherwise spill off-screen and get clipped); it never triggers when
+     the word fits. */
+  h1, h2, h3, h4, h5, h6 {
+    overflow-wrap: anywhere;
+    word-break: normal;
+    hyphens: manual;
+    text-wrap: balance;
+  }
+
+  /* Running text may break only as a last resort (long URLs, etc.). */
+  p, li, blockquote, figcaption, dd {
+    overflow-wrap: break-word;
+    hyphens: manual;
+    text-wrap: pretty;
+  }
+
+  :where(h1, h2).font-display {
+    letter-spacing: -0.025em;
+  }
+
+  ::selection {
+    background: var(--m-red);
+    color: #ffffff; /* 4.94:1 on --m-red */
+  }
+
+  /* Native scrollbars / form controls follow the theme (see color-scheme). */
+  main:focus,
+  main:focus-visible {
+    outline: none;
+  }
+}
+
+/* ==========================================================================
+   FOCUS (WCAG 2.4.7 / 1.4.11) — one global, theme-aware, two-tone ring.
+   ring colour >=3:1 on both backgrounds; the halo keeps it readable on photos.
+   Unlayered on purpose: beats Tailwind's `outline-none` utility.
+   ========================================================================== */
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+  box-shadow: 0 0 0 6px var(--focus-ring-halo);
+}
+/* Mouse/touch focus never shows a ring; keyboard focus always does. */
+:focus:not(:focus-visible) {
+  outline: none;
+}
+main:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+/* ==========================================================================
+   ACCESSIBILITY HELPERS
+   ========================================================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
   padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
 }
 
-html {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  overflow-x: hidden;
-}
-
-body {
-  background-color: var(--bg-primary);
-  color: var(--text-primary);
-  overflow-x: hidden;
-  min-height: 100vh;
-  line-height: 1.5;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  background: none;
-  border: none;
-  color: inherit;
-  font: inherit;
-  cursor: pointer;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-/* Typography Utilities */
-.font-display {
-  font-family: var(--font-display);
-}
-
-.font-tech {
+/* First focusable element of the page (rendered by Navbar). */
+.skip-link {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 1100;
+  padding: 0.85rem 1.25rem;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--text-heading);
+  color: var(--bg-primary);              /* 18-20:1 */
   font-family: var(--font-tech);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: var(--radius);
+  transform: translateY(-250%);
+  transition: transform 0.2s var(--ease-out-expo);
+}
+.skip-link:focus,
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   SHARED UTILITIES — documented for every agent; all optional, all theme-aware
+   --------------------------------------------------------------------------
+   .container      max-width: --container (+ gutters), centred, padding-inline: --gutter
+   .section-pad    padding-block: --section-pad-y
+   .eyebrow        small uppercase Space Grotesk label, wide tracking. Put a number in
+                   <span class="eyebrow-num">01</span> (red text token) and optionally
+                   the .m-badge-stripes before it. `.eyebrow--rule` appends a hairline.
+   .section-title  fluid display headline (Syne 800, uppercase, tight tracking, balanced,
+                   never breaks inside a word). Size = --fs-section (25px @390 → 72px @1440, fits words up to 13.8em such as
+                   SPECIFICATIONS); add .section-title--long for UNCOMPROMISING.-class words.
+   .display-xl     bigger hero-scale headline (--fs-display; fits UNFORGIVING. at every width).
+   .measure        max-width ~62ch for body copy; .body-lg 1.125rem lead paragraph.
+   .hairline       1px divider (any element). .hairline-y = top + bottom.
+   .frame-ticks    corner registration ticks on an image frame (position:relative added).
+                   Colour: --tick-color (default white 70%, photo-safe). .frame-ticks--ink =
+                   theme ink. Inset: --tick-inset (default 10px), size --tick-size (16px).
+   .scrim-bottom / .scrim-left  empty absolutely-positioned overlay <div aria-hidden> placed
+                   inside a position:relative photo frame, ABOVE the image and BELOW text.
+                   Gradient built from --scrim-strong / --scrim-soft. Text on top must use
+                   --on-photo-text / --on-photo-muted.
+   .stat-number    tabular figures (Space Grotesk), tight tracking, no wrapping.
+   .surface        card surface (--bg-card, 1px --border-subtle, --radius).
+   .link-inline    underlined inline link with red-text hover.
+   .on-photo       sets colour to --on-photo-text for a subtree (and flips .btn-m-secondary).
+   .text-red       colour: var(--m-red-text).  .text-muted-m  colour: var(--text-muted).
+   --------------------------------------------------------------------------
+   Type scale tokens: --fs-xs .75rem · --fs-sm .875rem · --fs-base 1rem · --fs-md 1.125rem
+   · --fs-lg 1.375rem · --fs-h3 · --fs-section · --fs-section-long · --fs-display (fluid).
+   ========================================================================== */
+.container {
+  width: 100%;
+  max-width: calc(var(--container) + 2 * var(--gutter));
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section-pad {
+  padding-block: var(--section-pad-y);
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  font-family: var(--font-tech);
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+.eyebrow-num {
+  color: var(--m-red-text);
+  font-variant-numeric: tabular-nums;
+}
+.eyebrow--rule::after {
+  content: '';
+  flex: 1 1 3rem;
+  min-width: 3rem;
+  height: 1px;
+  background: var(--border-light);
+}
+
+.section-title,
+.display-xl {
+  font-family: var(--font-display);
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--text-heading);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  overflow-wrap: anywhere; /* last-resort only, see headings rule */
+  word-break: normal;
+  hyphens: manual;
+  text-wrap: balance;
+}
+.section-title { font-size: var(--fs-section); }
+.section-title--long { font-size: var(--fs-section-long); }
+.display-xl    { font-size: var(--fs-display); line-height: 0.98; letter-spacing: -0.03em; }
+
+.measure { max-width: 62ch; }
+.body-lg { font-size: var(--fs-md); line-height: 1.7; color: var(--text-secondary); }
+
+.hairline    { border-top: 1px solid var(--border-subtle); }
+.hairline-y  { border-block: 1px solid var(--border-subtle); }
+
+.frame-ticks {
+  position: relative;
+  --tick-color: rgba(255, 255, 255, 0.7);
+  --tick-inset: 10px;
+  --tick-size: 16px;
+}
+.frame-ticks--ink { --tick-color: rgba(var(--overlay-rgb), 0.5); }
+.frame-ticks::before,
+.frame-ticks::after {
+  content: '';
+  position: absolute;
+  inset: var(--tick-inset);
+  z-index: 3;
+  pointer-events: none;
+  background-repeat: no-repeat;
+}
+.frame-ticks::before {
+  background-image:
+    linear-gradient(var(--tick-color), var(--tick-color)),
+    linear-gradient(var(--tick-color), var(--tick-color)),
+    linear-gradient(var(--tick-color), var(--tick-color)),
+    linear-gradient(var(--tick-color), var(--tick-color));
+  background-size: var(--tick-size) 1px, 1px var(--tick-size), var(--tick-size) 1px, 1px var(--tick-size);
+  background-position: left top, left top, right top, right top;
+}
+.frame-ticks::after {
+  background-image:
+    linear-gradient(var(--tick-color), var(--tick-color)),
+    linear-gradient(var(--tick-color), var(--tick-color)),
+    linear-gradient(var(--tick-color), var(--tick-color)),
+    linear-gradient(var(--tick-color), var(--tick-color));
+  background-size: var(--tick-size) 1px, 1px var(--tick-size), var(--tick-size) 1px, 1px var(--tick-size);
+  background-position: left bottom, left bottom, right bottom, right bottom;
+}
+
+.scrim-bottom,
+.scrim-left {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+.scrim-bottom {
+  background: linear-gradient(
+    to top,
+    rgba(var(--scrim-strong), 0.88) 0%,
+    rgba(var(--scrim-strong), 0.62) 28%,
+    rgba(var(--scrim-soft), 0.22) 58%,
+    rgba(var(--scrim-soft), 0) 82%
+  );
+}
+.scrim-left {
+  background: linear-gradient(
+    to right,
+    rgba(var(--scrim-strong), 0.82) 0%,
+    rgba(var(--scrim-strong), 0.55) 32%,
+    rgba(var(--scrim-soft), 0.18) 62%,
+    rgba(var(--scrim-soft), 0) 85%
+  );
+}
+@media (max-width: 768px) {
+  /* narrow screens: text spans the full width, so the left scrim darkens fully */
+  .scrim-left {
+    background: linear-gradient(to top, rgba(var(--scrim-strong), 0.88) 0%, rgba(var(--scrim-strong), 0.5) 55%, rgba(var(--scrim-soft), 0.15) 100%);
+  }
+}
+
+.stat-number {
+  font-family: var(--font-tech);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+  white-space: nowrap;
+}
+
+.surface {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+}
+
+.link-inline {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  text-decoration-color: rgba(var(--overlay-rgb), 0.4);
+  transition: color 0.2s ease, text-decoration-color 0.2s ease;
+}
+.link-inline:hover {
+  color: var(--m-red-text);
+  text-decoration-color: currentColor;
+}
+
+.on-photo { color: var(--on-photo-text); }
+.on-photo .btn-m-secondary {
+  color: var(--on-photo-text);
+  background: rgba(var(--scrim-strong), 0.35);
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.on-photo .btn-m-secondary:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: #ffffff;
+}
+
+.text-red     { color: var(--m-red-text); }
+.text-muted-m { color: var(--text-muted); }
+
+/* Typography utilities */
+.font-display { font-family: var(--font-display); }
+.font-tech    { font-family: var(--font-tech); }
+
+/* Display / tech text: no forced mid-word breaks (was `word-break: break-word`). */
+.font-display,
+.font-tech {
+  word-break: normal;
+  hyphens: manual;
 }
 
 .text-gradient-silver {
   background: linear-gradient(180deg, var(--text-heading) 0%, var(--text-secondary) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .text-gradient-m {
   background: linear-gradient(90deg, var(--m-blue) 0%, var(--m-dark-blue) 50%, var(--m-red) 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -206,29 +586,308 @@ img {
   overflow: hidden;
 }
 
-/* Long single words ("UNFORGIVING.", "SPECIFICATIONS") must wrap instead of
-   silently overflowing narrow viewports (html/body clip overflow-x, so an
-   unwrapped word just gets cut off rather than causing a scrollbar) */
-.font-display,
-.font-tech {
-  overflow-wrap: break-word;
-  word-break: break-word;
+/* Kept as a harmless hook: elements animated by GSAP carry this class.
+   It must NEVER hide content (opacity:0) and no longer sets a permanent
+   will-change (GSAP promotes layers while tweening). */
+.will-animate {
 }
 
-/* Hero headline: at ~768px (iPad portrait) the fluid clamp() sizing leaves
-   "UNFORGIVING." a few pixels wider than its container, forcing an ugly
-   mid-word break. Trim it slightly only in this narrow tablet band — mobile
-   and desktop/laptop sizes outside this range are untouched. */
+/* Scroll-prompt bounce (chevron) */
+@keyframes m-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(6px); }
+}
+.animate-bounce {
+  animation: m-bounce 1.6s ease-in-out infinite;
+}
+
+/* Scrollbar */
+html {
+  scrollbar-color: rgba(var(--overlay-rgb), 0.3) var(--bg-primary);
+}
+@supports selector(::-webkit-scrollbar) {
+  html { scrollbar-color: auto; }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb {
+    background: rgba(var(--overlay-rgb), 0.28);
+    border-radius: 0;
+    border: 1px solid var(--bg-primary);
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--m-red); }
+}
+
+/* Overlays: Grain & Vignette — decorative, inert, no blend modes, no animation.
+   (Both are position:fixed single-layer paints; filters/blend would force the
+   whole viewport to recomposite on every scroll frame.) */
+.ambient-film-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.03;
+  contain: strict;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 240px 240px;
+}
+
+.cinematic-vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 30;
+  contain: strict;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(var(--vignette-rgb), var(--vignette-opacity)) 100%);
+}
+
+/* BMW M Heritage Tri-Stripe */
+.m-badge-stripes {
+  display: inline-flex;
+  flex: none;
+  height: 3px;
+  width: 38px;
+  transform: skewX(-24deg);
+  overflow: hidden;
+  border-radius: 1px;
+}
+.m-stripe-1 { background-color: var(--m-blue);      width: 33.33%; height: 100%; }
+.m-stripe-2 { background-color: var(--m-dark-blue); width: 33.33%; height: 100%; }
+.m-stripe-3 { background-color: var(--m-red);       width: 33.34%; height: 100%; }
+/* --m-dark-blue (#002b49) is 1.4:1 on the dark page: lift the middle stripe
+   there so the tricolour still reads as three bands. */
+.dark .m-stripe-2 { background-color: #1a4f7a; }
+
+/* ==========================================================================
+   NAVIGATION — desktop row above 1024px, mobile menu toggle at <=1024px
+   (the desktop row needs ~853px; 1024 leaves comfortable room).
+   ========================================================================== */
+.navbar-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 var(--gutter);
+  z-index: 100;
+  background: linear-gradient(180deg, rgba(var(--bg-primary-rgb), 0.85) 0%, rgba(var(--bg-primary-rgb), 0) 100%);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(var(--overlay-rgb), 0.05);
+  transition: background 0.4s ease, border-color 0.4s ease;
+}
+
+/* Over a photograph (model hero) and not yet scrolled: theme-independent
+   scrim + constant light text (A3-07: was 1.9:1 in light theme).
+   Navbar sets data-nav-surface="photo" and data-scrolled="true|false". */
+.navbar-fixed[data-nav-surface='photo']:not([data-scrolled='true']) {
+  background: linear-gradient(180deg, rgba(var(--scrim-strong), 0.72) 0%, rgba(var(--scrim-strong), 0) 100%) !important;
+  border-color: transparent !important;
+  --nav-fg: var(--on-photo-muted);
+  --nav-fg-hover: var(--on-photo-text);
+  --nav-ring: #ffffff;
+  --focus-ring: #ffffff;
+  --focus-ring-halo: #050505;
+  color: var(--on-photo-text);
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  white-space: nowrap;
+  flex: none;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.mobile-menu-toggle {
+  display: none;
+  min-width: 44px;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 1024px) {
+  .nav-links {
+    display: none;
+  }
+  .mobile-menu-toggle {
+    display: flex;
+  }
+}
+
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--nav-fg, var(--text-secondary));
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+.nav-link:hover,
+.nav-link.active,
+.nav-link[aria-current]:not([aria-current='false']) {
+  color: var(--nav-fg-hover, var(--text-heading));
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: var(--m-red);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.35s var(--ease-out-expo);
+}
+
+.nav-link:hover::after,
+.nav-link.active::after,
+.nav-link[aria-current]:not([aria-current='false'])::after {
+  transform: scaleX(1);
+}
+
+/* Theme toggle (Horizon): 44px hit area, 1.1rem glyph, soft hover */
+.horizon-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  border-radius: var(--radius);
+  color: var(--nav-fg, var(--text-secondary));
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+.horizon-toggle:hover {
+  color: var(--nav-fg-hover, var(--text-heading));
+  background: rgba(var(--overlay-rgb), 0.08);
+}
+.horizon-toggle:active {
+  background: rgba(var(--overlay-rgb), 0.14);
+}
+
+/* ==========================================================================
+   BUTTONS — square, technical, one red accent. >=44px hit area, no layout
+   shift (colour/fill transitions only; transforms are left to GSAP/magnetic).
+   ========================================================================== */
+.btn-m-primary,
+.btn-m-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 0 28px;
+  font-family: var(--font-tech);
+  font-size: 0.8125rem;
+  line-height: 1.2;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  text-align: center;
+  white-space: nowrap;
+  border-radius: var(--radius);
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-m-primary {
+  background-color: var(--text-heading);
+  color: var(--bg-primary);                /* 18-20:1 */
+  font-weight: 700;
+  border: 1px solid transparent;
+  transition: color 0.3s var(--ease-out-expo), background-color 0.3s ease;
+}
+/* red fill wipes in from the left on hover (transform on a pseudo = no reflow) */
+.btn-m-primary::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--m-red);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.45s var(--ease-out-expo);
+}
+.btn-m-primary:hover,
+.btn-m-primary:focus-visible {
+  color: #ffffff;                          /* 4.94:1 on --m-red */
+}
+.btn-m-primary:hover::before,
+.btn-m-primary:focus-visible::before {
+  transform: scaleX(1);
+}
+.btn-m-primary:active {
+  background-color: #b30016;
+  color: #ffffff;
+}
+.btn-m-primary:active::before {
+  background: #b30016;
+}
+
+.btn-m-secondary {
+  background: rgba(var(--overlay-rgb), 0.04);
+  color: var(--text-primary);
+  font-weight: 600;
+  border: 1px solid var(--border-strong);   /* >=3.6:1 boundary (SC 1.4.11) */
+  transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease;
+}
+.btn-m-secondary:hover {
+  background: rgba(var(--overlay-rgb), 0.1);
+  border-color: var(--text-heading);
+  color: var(--text-heading);
+}
+.btn-m-secondary:active {
+  background: rgba(var(--overlay-rgb), 0.16);
+}
+
+.btn-m-primary:disabled,
+.btn-m-primary[aria-disabled='true'],
+.btn-m-secondary:disabled,
+.btn-m-secondary[aria-disabled='true'] {
+  opacity: 0.45;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   SECTION-AGENT COMPONENT RULES (legacy hooks still used by components;
+   owners may supersede them in their own src/styles/*.css)
+   ========================================================================== */
+
+/* Hero headline: at ~768px the fluid clamp() leaves "UNFORGIVING." a few px
+   wider than its container. Trim only in this narrow tablet band. */
 @media (min-width: 640px) and (max-width: 880px) {
   .hero-headline {
     font-size: clamp(2.6rem, 6.9vw, 6.8rem) !important;
   }
 }
 
-/* Hero's background car image: at its desktop footprint (72% wide, 75% tall)
-   it collides with the paragraph text once the headline wraps to more lines
-   on mobile. Shrink it into a smaller, fainter corner accent instead so the
-   text underneath it stays fully legible. */
 @media (max-width: 640px) {
   .hero-car-wrap {
     width: 92% !important;
@@ -239,10 +898,6 @@ img {
   }
 }
 
-/* Hero's floating specs strip: on mobile there isn't enough vertical room to
-   reserve space for an absolutely-positioned bottom strip once the headline
-   and paragraph wrap to more lines, so it ends up overlapping the content
-   above it. Below 768px it flows normally instead. */
 @media (max-width: 768px) {
   .hero-stats-strip {
     position: static !important;
@@ -256,8 +911,6 @@ img {
   }
 }
 
-/* Design detail sections (ModelPage): stack image above text instead of a
-   cramped 2-column grid that has no room to breathe on narrow viewports */
 @media (max-width: 768px) {
   .design-detail-item {
     grid-template-columns: 1fr !important;
@@ -273,213 +926,6 @@ img {
   }
 }
 
-/* GPU-acceleration hint for elements driven by GSAP transform/opacity tweens */
-.will-animate {
-  will-change: transform, opacity;
-}
-
-/* Scroll-prompt bounce (chevron) */
-@keyframes m-bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(6px); }
-}
-
-.animate-bounce {
-  animation: m-bounce 1.6s ease-in-out infinite;
-}
-
-/* Scrollbar */
-::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-}
-::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--text-dim);
-  border-radius: 2px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--m-red);
-}
-
-/* Overlays: Grain & Vignette */
-.ambient-film-grain {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 999;
-  opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-}
-
-.cinematic-vignette {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 30;
-  background: radial-gradient(ellipse at center, transparent 55%, rgba(var(--vignette-rgb), var(--vignette-opacity)) 100%);
-}
-
-/* BMW M Heritage Tri-Stripe */
-.m-badge-stripes {
-  display: inline-flex;
-  height: 3px;
-  width: 38px;
-  transform: skewX(-24deg);
-  overflow: hidden;
-  border-radius: 1px;
-}
-.m-stripe-1 {
-  background-color: var(--m-blue);
-  width: 33.33%;
-  height: 100%;
-}
-.m-stripe-2 {
-  background-color: var(--m-dark-blue);
-  width: 33.33%;
-  height: 100%;
-}
-.m-stripe-3 {
-  background-color: var(--m-red);
-  width: 33.34%;
-  height: 100%;
-}
-
-/* Navigation Bar */
-.navbar-fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 3.5rem;
-  z-index: 100;
-  background: linear-gradient(180deg, rgba(var(--bg-primary-rgb), 0.85) 0%, rgba(var(--bg-primary-rgb), 0) 100%);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(var(--overlay-rgb), 0.05);
-  transition: background 0.4s ease, border-color 0.4s ease;
-}
-
-@media (max-width: 768px) {
-  .navbar-fixed {
-    padding: 0 1.5rem;
-    height: 64px;
-  }
-}
-
-.nav-brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-family: var(--font-display);
-  font-size: 1.15rem;
-  font-weight: 800;
-  letter-spacing: 0.12em;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2.5rem;
-}
-
-.mobile-menu-toggle {
-  display: none;
-}
-
-@media (max-width: 768px) {
-  .nav-links {
-    display: none;
-  }
-
-  .mobile-menu-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-}
-
-.nav-link {
-  font-size: 0.82rem;
-  font-weight: 600;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  position: relative;
-  transition: color 0.3s ease;
-}
-
-.nav-link:hover, .nav-link.active {
-  color: var(--text-primary);
-}
-
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 0;
-  width: 0;
-  height: 1.5px;
-  background-color: var(--m-red);
-  transition: width 0.3s var(--ease-out-quad);
-}
-
-.nav-link:hover::after, .nav-link.active::after {
-  width: 100%;
-}
-
-/* Buttons */
-.btn-m-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 24px;
-  background-color: var(--text-heading);
-  color: var(--bg-primary);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  border-radius: 2px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
-}
-
-.btn-m-primary:hover {
-  background-color: var(--m-red);
-  color: #ffffff;
-  transform: translateY(-2px);
-}
-
-.btn-m-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 24px;
-  background: rgba(var(--overlay-rgb), 0.04);
-  color: var(--text-primary);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  border: 1px solid var(--border-subtle);
-  border-radius: 2px;
-  transition: all 0.3s ease;
-}
-
-.btn-m-secondary:hover {
-  border-color: rgba(var(--overlay-rgb), 0.3);
-  background: rgba(var(--overlay-rgb), 0.08);
-  transform: translateY(-2px);
-}
-
 /* Card hover perspective & micro-interactions */
 .model-card-container {
   position: relative;
@@ -488,11 +934,10 @@ img {
   height: 640px;
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 3px;
+  border-radius: var(--radius);
   overflow: hidden;
   cursor: pointer;
   transition: border-color 0.4s var(--ease-out-quad), box-shadow 0.4s var(--ease-out-quad);
-  will-change: transform;
 }
 
 @media (max-width: 768px) {
@@ -515,8 +960,8 @@ img {
   }
 }
 
-/* Reduced motion: the pinned scrub (JS, matched in HorizontalModelGallery.tsx)
-   is disabled on any width, so the section needs native horizontal scroll here too */
+/* Reduced motion: the pinned scrub is disabled, so the section needs native
+   horizontal scroll here too */
 @media (prefers-reduced-motion: reduce) {
   .model-gallery-section {
     overflow-x: auto;
@@ -525,17 +970,11 @@ img {
 }
 
 .gallery-header {
-  padding: 0 3.5rem;
-}
-
-@media (max-width: 768px) {
-  .gallery-header {
-    padding: 0 1.5rem;
-  }
+  padding: 0 var(--gutter);
 }
 
 .model-card-container:hover {
-  border-color: rgba(var(--overlay-rgb), 0.25);
+  border-color: rgba(var(--overlay-rgb), 0.3);
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 0 25px -5px rgba(226, 0, 26, 0.2);
 }
 
@@ -552,7 +991,6 @@ img {
   transform: scale(1.02);
   transition: transform 0.8s var(--ease-out-quad), filter 0.8s ease;
   filter: brightness(0.85) contrast(1.1);
-  will-change: transform;
 }
 
 .model-card-container:hover .model-card-img {
@@ -563,10 +1001,7 @@ img {
 .model-card-gradient {
   position: absolute;
   inset: 0;
-  /* Fades to the page background (not the dark vignette): the card's own
-     text (model name, specs) uses theme-aware colors, so it needs this
-     gradient's end color to track the theme too — dark text needs the light
-     bg here in light mode, light text needs the dark bg in dark mode. */
+  /* Fades to the page background so the card's theme-aware text stays legible. */
   background: linear-gradient(180deg, rgba(var(--bg-primary-rgb),0.2) 0%, rgba(var(--bg-primary-rgb),0.4) 40%, rgba(var(--bg-primary-rgb),0.92) 100%);
   pointer-events: none;
 }
@@ -575,33 +1010,30 @@ img {
 .specs-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 1.5rem;
+  gap: 1px;                       /* hairline-ruled telemetry table */
+  background: var(--border-subtle);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
 }
 
 @media (max-width: 1024px) {
-  .specs-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  .specs-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
 @media (max-width: 640px) {
-  .specs-grid {
-    grid-template-columns: 1fr;
-  }
+  .specs-grid { grid-template-columns: 1fr; }
 }
 
 .spec-cell {
-  background: rgba(var(--overlay-rgb), 0.02);
-  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
   padding: 2.25rem 2rem;
-  border-radius: 2px;
   position: relative;
-  transition: border-color 0.3s ease, background 0.3s ease;
+  min-width: 0;
+  transition: background 0.3s ease;
 }
 
 .spec-cell:hover {
-  border-color: var(--border-light);
-  background: rgba(var(--overlay-rgb), 0.04);
+  background: var(--bg-surface-elevated);
 }
 
 .spec-cell::before {
@@ -612,37 +1044,58 @@ img {
   width: 24px;
   height: 2px;
   background-color: var(--m-red);
+  transition: width 0.4s var(--ease-out-expo);
+}
+.spec-cell:hover::before {
+  width: 56px;
 }
 
 .spec-number {
   font-family: var(--font-display);
-  font-size: 3rem;
+  font-size: clamp(2.25rem, 1.5rem + 2.2vw, 3rem);
   font-weight: 800;
   line-height: 1;
+  letter-spacing: -0.02em;
   color: var(--text-heading);
   margin-bottom: 0.5rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .spec-label {
   font-family: var(--font-tech);
   font-size: 0.75rem;
   color: var(--text-secondary);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
 }
 
-/* Reduced Motion Override */
+/* ==========================================================================
+   REDUCED MOTION — CSS side (GSAP branches via gsap.matchMedia in components)
+   ========================================================================== */
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-bounce {
+    animation: none !important;
+  }
+  .skip-link {
+    transition: none;
   }
 }
 
 @theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
+  --font-heading: var(--font-display);
+  --font-sans: var(--font-body);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -683,48 +1136,4 @@ img {
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
-}

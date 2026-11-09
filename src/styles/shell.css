@@ -1,0 +1,52 @@
+/* App shell: main landmark, route error / 404 states. */
+#main { outline: none; }
+#main:focus { outline: none; }
+
+.shell-state {
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(72px + var(--section-pad-y, 5rem)) var(--gutter, clamp(1.25rem, 6vw, 3.5rem)) var(--section-pad-y, 5rem);
+  max-width: var(--container, 1400px);
+  margin: 0 auto;
+}
+.shell-state__eyebrow {
+  font-size: 0.8125rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--m-red-text, var(--m-red));
+  margin: 0 0 1rem;
+}
+.shell-state__title {
+  font-size: clamp(1.75rem, 6.2vw, 4.75rem);
+  text-transform: uppercase;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  color: var(--text-heading);
+  margin: 0 0 1.5rem;
+  text-wrap: balance;
+}
+.shell-state__copy {
+  max-width: 56ch;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  margin: 0 0 2rem;
+}
+.shell-state__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 3rem; }
+.shell-state__models { display: flex; flex-wrap: wrap; gap: 0.25rem 1.5rem; }
+.shell-state__model {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  font-size: 0.875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  border-bottom: 1px solid transparent;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.shell-state__model:hover { color: var(--text-heading); border-bottom-color: var(--m-red); }

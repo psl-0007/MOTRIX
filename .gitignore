@@ -74,3 +74,6 @@ Desktop.ini
 .tmp/
 temp/
 tmp/
+
+# AI tooling / agent skills
+.agents/

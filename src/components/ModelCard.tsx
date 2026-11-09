@@ -1,182 +1,120 @@
-import React, { useRef } from 'react';
-import { BMWModel } from '../data/models';
+import React from 'react';
+import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { BMWModel } from '../data/models';
+
+/**
+ * Meaningful alt text per photo (the files themselves are untouched).
+ * Descriptions follow public/images/models/ASSETS.md.
+ */
+const CARD_ALT: Record<string, string> = {
+  m2: 'Red BMW M2 on a forest road, front three-quarter view',
+  m3: 'Blue BMW M3 front three-quarter view in a parking garage',
+  m4: 'Matte black BMW M4 on a cobblestone driveway, front view',
+  m5: 'White BMW M5 front three-quarter view',
+  m8: 'Matte blue BMW M8 Gran Coupe parked in an urban garage',
+};
+
+/** Per-photo crop so the car (not the asphalt) stays in a wide frame. */
+const CARD_POS: Record<string, string> = {
+  m2: '50% 62%',
+  m3: '50% 58%',
+  m4: '50% 60%',
+  m5: '50% 58%',
+  m8: '50% 58%',
+};
 
 interface ModelCardProps {
   model: BMWModel;
-  onSelect: (model: BMWModel, cardEl: HTMLElement) => void;
-  isExpanding: boolean;
-  isSelected: boolean;
-  isOther: boolean;
+  index: number;
+  total: number;
+  /** Fired when the card link receives keyboard focus (gallery syncs the pin). */
+  onFocusCard?: (index: number, e: React.FocusEvent<HTMLAnchorElement>) => void;
 }
 
-export const ModelCard: React.FC<ModelCardProps> = ({
-  model,
-  onSelect,
-  isExpanding,
-  isSelected,
-  isOther,
-}) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-
-  const handleClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    if (cardRef.current && !isExpanding) {
-      onSelect(model, cardRef.current);
-    }
-  };
+export const ModelCard: React.FC<ModelCardProps> = ({ model, index, total, onFocusCard }) => {
+  const stats: Array<[string, string]> = [
+    ['Power', model.specs.power],
+    ['0–60 mph', model.specs.acceleration],
+    ['Top speed', model.specs.topSpeed],
+    ['Chassis', model.chassisCode],
+  ];
 
   return (
-    <div
-      ref={cardRef}
+    <li
+      className="lineup-card"
       id={`model-card-${model.id}`}
-      className="model-card-container will-animate"
-      onClick={handleClick}
-      style={{
-        opacity: isOther ? 0 : 1,
-        transform: isOther ? 'scale(0.9) translateY(40px)' : isSelected ? 'scale(1.04)' : undefined,
-        transition: isExpanding
-          ? 'all 0.8s cubic-bezier(0.25, 1, 0.5, 1)'
-          : 'border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s ease',
-        pointerEvents: isExpanding ? 'none' : 'auto',
-      }}
-      role="button"
-      tabIndex={0}
-      aria-label={`Explore ${model.name}`}
-      onKeyDown={(e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          handleClick(e as any);
-        }
-      }}
+      data-index={index}
+      style={{ ['--pos' as string]: CARD_POS[model.id] ?? '50% 60%' }}
     >
-      {/* Background Vehicle Image */}
-      <div className="model-card-img-wrap">
-        <img
-          src={model.heroImage}
-          alt={model.name}
-          className="model-card-img"
-          loading="lazy"
-        />
-        <div className="model-card-gradient" />
-      </div>
+      {/* registration ticks around the frame */}
+      <span className="lineup-card__ticks" aria-hidden="true" />
 
-      {/* Card Header Info */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '2rem',
-          left: '2rem',
-          right: '2rem',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          zIndex: 5,
-        }}
-      >
-        <span
-          className="font-tech"
-          style={{
-            fontSize: '0.8rem',
-            letterSpacing: '0.2em',
-            color: 'var(--text-secondary)',
-          }}
-        >
-          {model.index} / 05
+      <div className="lineup-card__frame">
+        <div className="lineup-card__media">
+          <img
+            className="lineup-card__img"
+            src={model.heroImage}
+            alt={CARD_ALT[model.id] ?? `${model.name} front view`}
+            width={1920}
+            height={1200}
+            decoding="async"
+            draggable={false}
+          />
+        </div>
+        <div className="lineup-card__dim" aria-hidden="true" />
+        <div className="lineup-card__scrim" aria-hidden="true" />
+
+        <span className="lineup-card__ghost" aria-hidden="true">
+          {model.index}
         </span>
-        <div className="m-badge-stripes">
-          <span className="m-stripe-1"></span>
-          <span className="m-stripe-2"></span>
-          <span className="m-stripe-3"></span>
+
+        <div className="lineup-card__top" aria-hidden="true">
+          <span>
+            {model.index} / {String(total).padStart(2, '0')}
+          </span>
+          <span className="m-badge-stripes">
+            <span className="m-stripe-1" />
+            <span className="m-stripe-2" />
+            <span className="m-stripe-3" />
+          </span>
+        </div>
+
+        <div className="lineup-card__body">
+          <div className="lineup-card__main">
+            <p className="lineup-card__desc">{model.descriptor}</p>
+            <h3 className="lineup-card__title" aria-label={model.name}>
+              <span className="lineup-card__brand">BMW</span>
+              <span className="lineup-card__code">{model.shortName}</span>
+            </h3>
+            {/* visual CTA only; the stretched link below is the control */}
+            <span className="lineup-card__cta" aria-hidden="true">
+              <span className="lineup-card__cta-label">Explore model</span>
+              <span className="lineup-card__cta-arrow">
+                <ArrowRight size={16} strokeWidth={2.5} />
+              </span>
+            </span>
+          </div>
+
+          <dl className="lineup-card__stats">
+            {stats.map(([label, value]) => (
+              <div className="lineup-card__stat" key={label}>
+                <dt>{label}</dt>
+                <dd>{value}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
       </div>
 
-      {/* Card Bottom Content */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '2rem',
-          left: '2rem',
-          right: '2rem',
-          zIndex: 5,
-        }}
+      {/* Real anchor: Cmd/Ctrl/middle-click open a new tab, plain click is a router navigation. */}
+      <Link
+        className="lineup-card__link"
+        to={`/models/${model.id}`}
+        onFocus={(e) => onFocusCard?.(index, e)}
       >
-        <div
-          className="font-tech"
-          style={{
-            fontSize: '0.75rem',
-            color: 'var(--m-red)',
-            letterSpacing: '0.2em',
-            fontWeight: 700,
-            textTransform: 'uppercase',
-            marginBottom: '0.4rem',
-          }}
-        >
-          {model.descriptor}
-        </div>
-
-        <h3
-          className="font-display"
-          style={{
-            fontSize: 'clamp(2.4rem, 4.5vw, 3.4rem)',
-            fontWeight: 800,
-            lineHeight: 1,
-            color: 'var(--text-primary)',
-            marginBottom: '1rem',
-            letterSpacing: '-0.03em',
-          }}
-        >
-          {model.name}
-        </h3>
-
-        {/* Quick Spec Highlights */}
-        <div
-          style={{
-            display: 'flex',
-            gap: '1.25rem',
-            borderTop: '1px solid rgba(var(--overlay-rgb), 0.1)',
-            paddingTop: '1rem',
-            marginBottom: '1.25rem',
-          }}
-        >
-          <div>
-            <div className="font-tech" style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>POWER</div>
-            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)' }}>
-              {model.specs.power}
-            </div>
-          </div>
-          <div style={{ width: '1px', backgroundColor: 'rgba(var(--overlay-rgb), 0.1)' }} />
-          <div>
-            <div className="font-tech" style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>0–60 MPH</div>
-            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)' }}>
-              {model.specs.acceleration}
-            </div>
-          </div>
-          <div style={{ width: '1px', backgroundColor: 'rgba(var(--overlay-rgb), 0.1)' }} />
-          <div>
-            <div className="font-tech" style={{ fontSize: '0.65rem', color: 'var(--text-secondary)' }}>CHASSIS</div>
-            <div className="font-display" style={{ fontSize: '1.1rem', fontWeight: 800, color: 'var(--text-heading)' }}>
-              {model.chassisCode}
-            </div>
-          </div>
-        </div>
-
-        {/* Explore CTA */}
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            fontSize: '0.8rem',
-            fontWeight: 700,
-            letterSpacing: '0.15em',
-            color: 'var(--text-heading)',
-            textTransform: 'uppercase',
-          }}
-        >
-          <span>EXPLORE MODEL</span>
-          <ArrowRight size={16} color="var(--m-red)" />
-        </div>
-      </div>
-    </div>
+        <span className="sr-only">Explore model: {model.name}</span>
+      </Link>
+    </li>
   );
 };

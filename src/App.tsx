@@ -1,52 +1,67 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import gsap from 'gsap';
-import { useGSAP } from '@gsap/react';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { Flip } from 'gsap/Flip';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 
+import { ScrollTrigger } from '@/lib/gsap';
 import { Navbar } from './components/Navbar';
 import { Home } from './pages/Home';
 import { ModelPage } from './pages/ModelPage';
+import { NotFound } from './components/NotFound';
+import { ScrollManager } from './components/ScrollManager';
+import { ErrorBoundary } from './components/ErrorBoundary';
+import { Footer } from './components/Footer';
 import { ThemeProvider } from './lib/theme';
+import './styles/shell.css';
 
-// Register all GSAP plugins once at application top-level as instructed by GSAP skills
-gsap.registerPlugin(useGSAP, ScrollTrigger, Flip);
+/** Keeps the crash boundary scoped per route (navigating away recovers). */
+const RoutedMain: React.FC = () => {
+  const { pathname } = useLocation();
+  return (
+    <>
+      <main id="main" tabIndex={-1}>
+        <ErrorBoundary key={pathname}>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/models/:id" element={<ModelPage />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </ErrorBoundary>
+      </main>
+      <Footer />
+    </>
+  );
+};
 
 export const App: React.FC = () => {
-  // Web fonts (Syne/Outfit/Space Grotesk) load with display=swap, so the browser
-  // first renders with fallback-font metrics, then swaps in the real fonts and
-  // reflows. ScrollTriggers created on mount measure positions against the
-  // pre-swap layout, so pinned sections (Intro, Gallery) can desync from where
-  // they actually sit once fonts land — causing sections to visibly overlap
-  // mid-scroll. Refresh once fonts are ready (and again on full page load as a
-  // fallback for any image-driven shifts) to resync every trigger.
+  // Web fonts load with display=swap, so triggers created on mount measure against the
+  // fallback-font layout. Re-measure once fonts and the page (images, video posters) have
+  // settled. Debounced so several late signals cost a single refresh; safe under StrictMode
+  // because the cleanup removes every listener and pending timer.
   useEffect(() => {
-    const refresh = () => ScrollTrigger.refresh();
-    if (typeof document !== 'undefined' && 'fonts' in document) {
-      document.fonts.ready.then(refresh);
-    }
-    window.addEventListener('load', refresh);
-    return () => window.removeEventListener('load', refresh);
+    let timer: number | undefined;
+    const refresh = () => {
+      window.clearTimeout(timer);
+      timer = window.setTimeout(() => ScrollTrigger.refresh(), 150);
+    };
+    if ('fonts' in document) void document.fonts.ready.then(refresh);
+    if (document.readyState === 'complete') refresh();
+    else window.addEventListener('load', refresh, { once: true });
+    return () => {
+      window.clearTimeout(timer);
+      window.removeEventListener('load', refresh);
+    };
   }, []);
 
   return (
     <ThemeProvider>
       <Router>
+        <ScrollManager />
         <div style={{ position: 'relative', minHeight: '100vh', backgroundColor: 'var(--bg-primary)', color: 'var(--text-primary)' }}>
           {/* Ambient Film Grain & Cinematic Vignette Overlays */}
-          <div className="ambient-film-grain" />
-          <div className="cinematic-vignette" />
+          <div className="ambient-film-grain" aria-hidden="true" />
+          <div className="cinematic-vignette" aria-hidden="true" />
 
-          {/* Global Navigation */}
           <Navbar />
-
-          {/* Application Routes */}
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/models/:id" element={<ModelPage />} />
-            <Route path="*" element={<Home />} />
-          </Routes>
+          <RoutedMain />
         </div>
       </Router>
     </ThemeProvider>

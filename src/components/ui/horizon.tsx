@@ -15,8 +15,7 @@ export function Horizon({
   toggled,
   className,
   type = "button",
-  title = "Toggle theme",
-  "aria-label": ariaLabel = "Toggle theme",
+  "aria-label": ariaLabel = "Dark mode",
   "aria-pressed": ariaPressed,
   ...props
 }: HorizonProps) {
@@ -28,10 +27,10 @@ export function Horizon({
     <button
       {...props}
       type={type}
-      title={title}
       aria-label={ariaLabel}
       aria-pressed={toggled ?? ariaPressed}
       className={[
+        "horizon-toggle",
         className,
         toggled === true ? "dark" : toggled === false ? "light" : undefined,
       ]
