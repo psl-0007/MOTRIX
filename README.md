@@ -1,58 +1,43 @@
 # MOTRIX — The Art of M Performance
 
-MOTRIX is a cinematic, interactive website showcasing BMW M Performance cars. It combines immersive visuals, smooth animations, and interactive elements to create an engaging automotive experience.
+A cinematic, scroll-driven website showcasing BMW M cars (M2, M3, M4, M5, M8), with light and dark mode. Deployed on [Vercel](https://vercel.com).
 
-## Features
+## Tech
 
-- Interactive BMW M Performance car showcase.
-- Animated car selection and expansion.
-- GSAP-powered scroll animations.
-- Dynamic vehicle information reveals.
-- Cinematic hero section with video backgrounds.
-- Light and dark mode.
-- Responsive design for different screen sizes.
+React 19 · TypeScript · Vite · Tailwind CSS · GSAP · React Router
 
-## Tech Stack
-
-- React
-- Vite
-- JavaScript
-- GSAP
-- ScrollTrigger
-- CSS3
-
-## Getting Started
-
-Clone the repository:
-
-```bash
-git clone <your-repository-url>
-```
-
-Navigate to the project directory:
-
-```bash
-cd motrix
-```
-
-Install dependencies:
+## Run locally
 
 ```bash
 npm install
-```
-
-Start the development server:
-
-```bash
 npm run dev
 ```
 
-Open the local URL displayed in your terminal.
+Open http://localhost:3000.
 
-## Purpose
+## Build
 
-MOTRIX explores the intersection of automotive design, interactive web development, and cinematic storytelling.
+```bash
+npm run build     # outputs to dist/
+npm run preview   # serve the build locally
+```
 
----
+## Deploy on Vercel
 
-**MOTRIX — Engineered to Move.**
+1. Push the repo to GitHub.
+2. Import it in Vercel. The Vite preset is detected automatically:
+   - Build command: `npm run build`
+   - Output directory: `dist`
+3. Deploy. Every push to `main` redeploys.
+
+## Project layout
+
+```
+src/
+  components/   page sections and UI
+  pages/        Home and model pages
+  data/         model content
+  styles/       CSS per section
+public/         images and hero video
+docs/           asset notes
+```
