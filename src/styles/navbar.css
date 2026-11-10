@@ -118,7 +118,7 @@ html.dark .mnav {
   box-sizing: border-box;
   height: 100%;
   width: 100%;
-  max-width: calc(var(--container, 1400px) + 2 * var(--gutter, 3.5rem));
+  max-width: var(--container, 1400px); /* same box as every section's inner wrapper, so the brand and links share their content edges */
   margin: 0 auto;
   padding: 0 var(--gutter, clamp(1.25rem, 6vw, 3.5rem));
   display: flex;

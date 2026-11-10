@@ -144,17 +144,17 @@ export const HorizontalModelGallery: React.FC = () => {
           }
         }
 
-        // parallax: image drifts against the card, the ghost numeral against the image
+        // parallax: image drifts against the card
         cards.forEach((card) => {
-          const img = card.querySelector('.lineup-card__img');
-          const ghost = card.querySelector('.lineup-card__ghost');
-          gsap
-            .timeline({
-              defaults: { ease: 'none' },
+          gsap.fromTo(
+            card.querySelector('.lineup-card__img'),
+            { xPercent: -6 },
+            {
+              xPercent: 6,
+              ease: 'none',
               scrollTrigger: { trigger: card, containerAnimation: hTween, start: 'left right', end: 'right left', scrub: true },
-            })
-            .fromTo(img, { xPercent: -6 }, { xPercent: 6 }, 0)
-            .fromTo(ghost, { x: 90 }, { x: -90 }, 0);
+            }
+          );
         });
 
         // title intro: eyebrow + SplitText headline + card shutters, once, on approach

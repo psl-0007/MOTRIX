@@ -65,10 +65,6 @@ export const ModelCard: React.FC<ModelCardProps> = ({ model, index, total, onFoc
         <div className="lineup-card__dim" aria-hidden="true" />
         <div className="lineup-card__scrim" aria-hidden="true" />
 
-        <span className="lineup-card__ghost" aria-hidden="true">
-          {model.index}
-        </span>
-
         <div className="lineup-card__top" aria-hidden="true">
           <span>
             {model.index} / {String(total).padStart(2, '0')}
